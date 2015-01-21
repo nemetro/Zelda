@@ -13,12 +13,14 @@ public class Enemy : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		if(health < 1)
+			Destroy(this.gameObject);
 	}
 
 	void OnTriggerEnter(Collider other) {
 		
 		if (other.gameObject.tag == "Sword") {
+			print ("hit");
 			health--;
 		}
 	}

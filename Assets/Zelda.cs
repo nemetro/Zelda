@@ -7,6 +7,7 @@ public class Zelda : MonoBehaviour {
 	private bool locked = false;
 	private bool hasSword = true;
 	private int swinging;
+	private direction facing;
 	public int health = 6;
 	public Transform sword;
 	public Vector3 trans;
@@ -18,6 +19,7 @@ public class Zelda : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		Z = this;
+		facing = direction.north;
 	}
 	
 	void Update() {
@@ -38,15 +40,19 @@ public class Zelda : MonoBehaviour {
 		if (Input.GetKey (KeyCode.LeftArrow) || Input.GetKey (KeyCode.A)) {
 			trajectory = Vector3.right;
 			transform.Translate (trajectory * pixel);
+			facing = direction.west;
 		} else if (Input.GetKey (KeyCode.UpArrow) || Input.GetKey (KeyCode.W)) {
 			trajectory = Vector3.up;
 			transform.Translate (trajectory * pixel);
+			facing = direction.north;
 		} else if (Input.GetKey (KeyCode.RightArrow) || Input.GetKey (KeyCode.D)) {
 			trajectory = Vector3.left;
 			transform.Translate (trajectory * pixel);
+			facing = direction.east;
 		} else if (Input.GetKey (KeyCode.DownArrow) || Input.GetKey (KeyCode.S)) {
 			trajectory = Vector3.down;
 			transform.Translate (trajectory * pixel);
+			facing = direction.south;
 		}
 	}
 	
@@ -58,13 +64,19 @@ public class Zelda : MonoBehaviour {
 	}
 	
 	void OnTriggerExit(Collider other) {
-		if (other.gameObject.tag == "Obstacle") {
+		if (other.gameObject.tag == "Obstacle" || other.gameObject.tag == "Obstacle") {
 			print ("Unlocked");
 			locked = false;
 		}
 	}
 	void OnTriggerStay(Collider other) {
-		if (other.gameObject.tag == "Obstacle") {
+
+		if(other.gameObject.tag == "Wall"){
+			print ("Wall");
+			transform.Translate (trajectory * -1 * pixel);
+		}
+
+		else if (other.gameObject.tag == "Obstacle") {
 			locked = true;
 			if(overlap (other)) transform.Translate (trajectory * -1 * pixel);
 			else locked = false;
@@ -117,14 +129,18 @@ public class Zelda : MonoBehaviour {
 		if (other.gameObject.tag == "Enemy") {
 			transform.Translate (trajectory * -2);
 			health--;
+			if(health < 1)
+				Application.LoadLevel("_Dungeon1_Troy");
 		}
-		
+
 		locked = true;
 		if (other.gameObject.tag == "Obstacle" && overlap(other)) {
-			
 			print("Locked");
-			
-			
+		}
+		else if(other.gameObject.tag == "Wall"){
+			transform.Translate (trajectory * -1 * pixel);
+			print ("WALL");
+			locked = false;
 		}
 		else  locked = false;
 	}
