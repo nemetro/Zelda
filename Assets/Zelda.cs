@@ -37,9 +37,9 @@ public class Zelda : MonoBehaviour {
 		if (Input.GetKeyDown (KeyCode.X) || Input.GetKeyDown (KeyCode.Period)) {
 			if(hasSword) {
 				if(facing == direction.north || facing == direction.south)
-					Instantiate(swordup, transform.position + trajectory * 14 * pixel, Quaternion.identity);
+					Instantiate(swordup, transform.position + trajectory * 12 * pixel, Quaternion.identity);
 				else
-					Instantiate(swordright, transform.position + trajectory * 14 * pixel, Quaternion.identity);
+					Instantiate(swordright, transform.position + trajectory * 12 * pixel, Quaternion.identity);
 				swinging = 0;
 			}
 		}
