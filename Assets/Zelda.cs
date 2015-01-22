@@ -9,7 +9,8 @@ public class Zelda : MonoBehaviour {
 	private int swinging;
 	private direction facing;
 	public int health = 6;
-	public Transform sword;
+	public Transform swordup;
+	public Transform swordright;
 	public Vector3 trans;
 	public static Zelda Z;
 	
@@ -23,9 +24,22 @@ public class Zelda : MonoBehaviour {
 	}
 	
 	void Update() {
+		if(Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown (KeyCode.W)){
+			facing = direction.north;
+		}else if(Input.GetKeyDown (KeyCode.RightArrow) || Input.GetKeyDown (KeyCode.D)){
+			facing = direction.east;
+		}else if(Input.GetKeyDown (KeyCode.DownArrow) || Input.GetKeyDown (KeyCode.S)){
+			facing = direction.south;
+		}else if(Input.GetKeyDown (KeyCode.LeftArrow) || Input.GetKeyDown (KeyCode.A)){
+			facing = direction.west;
+		}
+
 		if (Input.GetKeyDown (KeyCode.X) || Input.GetKeyDown (KeyCode.Period)) {
 			if(hasSword) {
-				Instantiate(sword, transform.position + trajectory, Quaternion.identity);
+				if(facing == direction.north || facing == direction.south)
+					Instantiate(swordup, transform.position + trajectory * 14 * pixel, Quaternion.identity);
+				else
+					Instantiate(swordright, transform.position + trajectory * 14 * pixel, Quaternion.identity);
 				swinging = 0;
 			}
 		}
