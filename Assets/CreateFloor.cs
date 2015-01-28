@@ -4,8 +4,8 @@ using System.Collections;
 public class CreateFloor : MonoBehaviour {
 
 	public GameObject tilePrefab;
-	float xWall = 63f/16f;
-	float yWall = 3.5f;
+	float xWall = 4f;
+	float yWall = 4f;
 
 	void Start () {
 		float x=0.5f + xWall/2f, y=0.5f + yWall/2f;

@@ -6,11 +6,14 @@ public class Zelda : MonoBehaviour {
 	private Vector3 trajectory;
 	private bool locked = false;
 	private bool hasSword = true;
+	public bool bombing = false;
 	private int swinging;
 	private direction facing;
-	public int health = 6;
+	public static int health = 6;
+	public static int MAX_HEALTH = 6;
 	public Transform swordup;
 	public Transform swordright;
+	public Transform bomb;
 	public Vector3 trans;
 	public static Zelda Z;
 	
@@ -43,6 +46,12 @@ public class Zelda : MonoBehaviour {
 				swinging = 0;
 			}
 		}
+		if (Input.GetKeyDown (KeyCode.Z) || Input.GetKeyDown (KeyCode.Comma)) {
+			if(!bombing) {
+				Instantiate(bomb, transform.position + trajectory * 16 * pixel, Quaternion.identity);
+				bombing = true;
+			}
+		}
 	}
 	// Update is called once per frame
 	void FixedUpdate () {
@@ -50,6 +59,7 @@ public class Zelda : MonoBehaviour {
 			swinging++;
 			return;
 		}
+
 		if(locked) return;
 		if (Input.GetKey (KeyCode.LeftArrow) || Input.GetKey (KeyCode.A)) {
 			trajectory = Vector3.right;
@@ -79,14 +89,14 @@ public class Zelda : MonoBehaviour {
 	
 	void OnTriggerExit(Collider other) {
 		if (other.gameObject.tag == "Obstacle" || other.gameObject.tag == "Obstacle") {
-			print ("Unlocked");
+//			print ("Unlocked");
 			locked = false;
 		}
 	}
 	void OnTriggerStay(Collider other) {
 
 		if(other.gameObject.tag == "Wall"){
-			print ("Wall");
+//			print ("Wall");
 			transform.Translate (trajectory * -1 * pixel);
 		}
 
@@ -104,7 +114,7 @@ public class Zelda : MonoBehaviour {
 					} else if (other.gameObject.transform.position.y - transform.position.y < -0.5f) {
 						transform.position = new Vector3 (transform.position.x, other.gameObject.transform.position.y + 1f, transform.position.z);
 					} else {
-						print ("Skip");
+//						print ("Skip");
 					}
 				} else if (trajectory == Vector3.up) {
 					if (other.gameObject.transform.position.x - transform.position.x > 0.5f) {
@@ -112,7 +122,7 @@ public class Zelda : MonoBehaviour {
 					} else if (other.gameObject.transform.position.x - transform.position.x < -0.5f) {
 						transform.position = new Vector3 (other.gameObject.transform.position.x + 1f, transform.position.y, transform.position.z);
 					} else {
-						print ("Skip");
+//						print ("Skip");
 					}
 				} else if (trajectory == Vector3.right) {
 					if (other.gameObject.transform.position.y - transform.position.y > 0.5f) {
@@ -120,7 +130,7 @@ public class Zelda : MonoBehaviour {
 					} else if (other.gameObject.transform.position.y - transform.position.y < -0.5f) {
 						transform.position = new Vector3 (transform.position.x, other.gameObject.transform.position.y + 1f, transform.position.z);
 					} else {
-						print ("Skip");
+//						print ("Skip");
 					}
 				} else if (trajectory == Vector3.down) {
 					if (other.gameObject.transform.position.x - transform.position.x > 0.5f) {
@@ -128,10 +138,19 @@ public class Zelda : MonoBehaviour {
 					} else if (other.gameObject.transform.position.x - transform.position.x < -0.5f) {
 						transform.position = new Vector3 (other.gameObject.transform.position.x + 1f, transform.position.y, transform.position.z);
 					} else {
-						print ("Skip");
+//						print ("Skip");
 					}
 				}
 			}
+		}
+		else if(other.gameObject.tag == "Moveable"){
+			print ("MOVEABLE");
+			transform.Translate (trajectory *-1* pixel);
+			other.gameObject.tag = "Obstacle";
+			if (trajectory == Vector3.up || trajectory == Vector3.down)
+				other.transform.Translate(trajectory*-16*pixel);
+			else
+				other.transform.Translate(trajectory*16*pixel);
 		}
 	}
 	
@@ -143,17 +162,19 @@ public class Zelda : MonoBehaviour {
 		if (other.gameObject.tag == "Enemy") {
 			transform.Translate (trajectory * -2);
 			health--;
-			if(health < 1)
+			if(health < 1){
 				Application.LoadLevel("_Dungeon1_Troy");
+				health = MAX_HEALTH;
+			}
 		}
 
 		locked = true;
 		if (other.gameObject.tag == "Obstacle" && overlap(other)) {
-			print("Locked");
+//			print("Locked");
 		}
 		else if(other.gameObject.tag == "Wall"){
 			transform.Translate (trajectory * -1 * pixel);
-			print ("WALL");
+//			print ("WALL");
 			locked = false;
 		}
 		else  locked = false;
