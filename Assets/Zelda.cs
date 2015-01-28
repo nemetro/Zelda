@@ -180,32 +180,61 @@ public class Zelda : MonoBehaviour {
 		else  locked = false;
 	}
 
-	public void MoveLink(direction dir){
+	public void MoveLink(direction dir, float dist){
 
 		Vector3 dest = transform.position;
-		switch (dir){
-		case direction.north:
-			dest.y += trans.y;
-			break;
-		case direction.south:
-			dest.y -= trans.y;
-			break;
-		case direction.east:
-			dest.x += trans.x;
-			break;
-		case direction.west:
-			dest.x -= trans.x;
-			break;
-		case direction.up:
-			dest.z += trans.z;
-			break;
-		case direction.down:
-			dest.z += trans.z;
-			break;
-		default:
-			print ("Broke");
-			break;
+
+		if(dist != 0){
+			switch (dir){
+			case direction.north:
+				dest.y += dist;
+				break;
+			case direction.south:
+				dest.y -= dist;
+				break;
+			case direction.east:
+				dest.x += dist;
+				break;
+			case direction.west:
+				dest.x -= dist;
+				break;
+			case direction.up:
+				dest.z += dist;
+				break;
+			case direction.down:
+				dest.z += dist;
+				break;
+			default:
+				print ("Broke");
+				break;
+			}
+		}
+		else{
+			switch (dir){
+			case direction.north:
+				dest.y += trans.y;
+				break;
+			case direction.south:
+				dest.y -= trans.y;
+				break;
+			case direction.east:
+				dest.x += trans.x;
+				break;
+			case direction.west:
+				dest.x -= trans.x;
+				break;
+			case direction.up:
+				dest.z += trans.z;
+				break;
+			case direction.down:
+				dest.z += trans.z;
+				break;
+			default:
+				print ("Broke");
+				break;
+			}
 		}
 		transform.position = dest;
+		
 	}
 }
