@@ -12,7 +12,6 @@ public class Bomb : MonoBehaviour {
 		if(this.name == "Boom(Clone)"){
 			timer = .5f;
 		}
-
 	}
 	
 	// Update is called once per frame
@@ -24,8 +23,6 @@ public class Bomb : MonoBehaviour {
 				Zelda.Z.bombing = false;
 			}
 			Destroy(this.gameObject);
-
 		}
 	}
-
 }

@@ -8,18 +8,42 @@ public class Zelda : MonoBehaviour {
 	private bool hasSword = true;
 	public bool bombing = false;
 	private int swinging;
+	private int colliding = 0;
 	private direction facing;
 	public static int health = 6;
 	public static int MAX_HEALTH = 6;
 	public Transform swordup;
 	public Transform swordright;
 	public Transform bomb;
+	public Transform obstacle;
 	public Vector3 trans;
 	public static Zelda Z;
-	
+	private float bounce = 0;
+	private int pixelsMoved = 0;
 	private float pixel = 0.0625f;
 	// Width of a Zelda pixel (not a screen pixel) in meters
 	
+
+	void snap() {
+		transform.position = new Vector3(Mathf.Round(transform.position.x * 2) / 2, Mathf.Round(transform.position.y * 2) / 2,  transform.position.z);
+		/*if(trajectory == Vector3.right || trajectory == Vector3.left) {
+			float pixel = 16f * transform.position.y - 24f; // Pixels from topmost pixel of topmost floor tile
+			while(pixel >= 175f) pixel -= 175f;
+			float offset = pixel / 16f; // meters from topmost pixel of topmost floor tile of room
+			float move = Mathf.Round(offset * 2f) / 2f - offset; // number of meters to move to snap vertically
+			print (pixel + ", " + offset + ", " + move);
+			transform.position = new Vector3(transform.position.x, transform.position.y + move, transform.position.z);
+		}
+		else {
+			float pixel = 16f * transform.position.x + 430f; // Pixels from leftmost pixel of leftmost floor tile
+			while(pixel < 248f) pixel += 248f;
+			float offset = pixel / 16f; // meters from leftmost pixel of leftmost floor tile of room
+			float move = Mathf.Round(offset * 2f) / 2f - offset; // number of meters to move to snap horizontally
+			print (pixel + ", " + offset + ", " + move);
+			transform.position = new Vector3(transform.position.x + move, transform.position.y, transform.position.z);
+		}*/
+	}
+
 	// Use this for initialization
 	void Start () {
 		Z = this;
@@ -27,6 +51,7 @@ public class Zelda : MonoBehaviour {
 	}
 	
 	void Update() {
+
 		if(Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown (KeyCode.W)){
 			facing = direction.north;
 		}else if(Input.GetKeyDown (KeyCode.RightArrow) || Input.GetKeyDown (KeyCode.D)){
@@ -42,42 +67,68 @@ public class Zelda : MonoBehaviour {
 				if(facing == direction.north || facing == direction.south)
 					Instantiate(swordup, transform.position + trajectory * 12 * pixel, Quaternion.identity);
 				else
-					Instantiate(swordright, transform.position + trajectory * 12 * pixel, Quaternion.identity);
+					Instantiate(swordright, transform.position + trajectory * -12 * pixel, Quaternion.identity);
 				swinging = 0;
 			}
 		}
 		if (Input.GetKeyDown (KeyCode.Z) || Input.GetKeyDown (KeyCode.Comma)) {
-			if(!bombing) {
-				Instantiate(bomb, transform.position + trajectory * 16 * pixel, Quaternion.identity);
+			if(!bombing){
+				if(facing == direction.north || facing == direction.south)
+					Instantiate(bomb, transform.position + trajectory * 16 * pixel, Quaternion.identity);
+				else
+					Instantiate(bomb, transform.position + trajectory * -16 * pixel, Quaternion.identity);
 				bombing = true;
 			}
+		}
+		if(Input.GetKeyDown(KeyCode.C)){
+//			Vector3 pos = new Vector3(Mathf.Round(transform.position.x * 2) / 2, Mathf.Round(transform.position.y * 2) / 2,  transform.position.z);
+			if(facing == direction.north || facing == direction.south)
+				Instantiate(obstacle, transform.position + trajectory * 16 * pixel, Quaternion.identity);
+			else
+				Instantiate(obstacle, transform.position + trajectory * -16 * pixel, Quaternion.identity);
 		}
 	}
 	// Update is called once per frame
 	void FixedUpdate () {
+		if(bounce > 0) {
+			if(locked) {
+				bounce = 0;
+				return;
+			}
+			else {
+				bounce -= 5*pixel;
+				transform.Translate (trajectory * -5f * pixel);
+				return;
+			}
+		}
 		if(swinging < Sword.framesToDelay) {
 			swinging++;
 			return;
 		}
-
 		if(locked) return;
+		Vector3 oldTrajectory = trajectory;
 		if (Input.GetKey (KeyCode.LeftArrow) || Input.GetKey (KeyCode.A)) {
 			trajectory = Vector3.right;
-			transform.Translate (trajectory * pixel);
 			facing = direction.west;
 		} else if (Input.GetKey (KeyCode.UpArrow) || Input.GetKey (KeyCode.W)) {
 			trajectory = Vector3.up;
-			transform.Translate (trajectory * pixel);
 			facing = direction.north;
 		} else if (Input.GetKey (KeyCode.RightArrow) || Input.GetKey (KeyCode.D)) {
 			trajectory = Vector3.left;
-			transform.Translate (trajectory * pixel);
 			facing = direction.east;
 		} else if (Input.GetKey (KeyCode.DownArrow) || Input.GetKey (KeyCode.S)) {
 			trajectory = Vector3.down;
-			transform.Translate (trajectory * pixel);
 			facing = direction.south;
 		}
+		else return;
+		if(trajectory != oldTrajectory) {
+			while(pixelsMoved != 0) {
+				pixelsMoved = (pixelsMoved + 1) % 8;
+				transform.Translate (oldTrajectory * pixel);
+			}
+		}
+		transform.Translate (trajectory * pixel);
+		pixelsMoved = (pixelsMoved + 1) % 8;
 	}
 	
 	
@@ -88,60 +139,15 @@ public class Zelda : MonoBehaviour {
 	}
 	
 	void OnTriggerExit(Collider other) {
-		if (other.gameObject.tag == "Obstacle" || other.gameObject.tag == "Obstacle") {
-//			print ("Unlocked");
+		if (other.gameObject.tag == "Obstacle" || other.gameObject.tag == "Wall") {
+			colliding--;
+			//print ("Unlocked");
 			locked = false;
 		}
 	}
 	void OnTriggerStay(Collider other) {
-
-		if(other.gameObject.tag == "Wall"){
-//			print ("Wall");
+		if(other.gameObject.tag == "Wall" || other.gameObject.tag == "Obstacle"){
 			transform.Translate (trajectory * -1 * pixel);
-		}
-
-		else if (other.gameObject.tag == "Obstacle") {
-			locked = true;
-			if(overlap (other)) transform.Translate (trajectory * -1 * pixel);
-			else locked = false;
-			
-			
-			// If colliding with unit cube
-			if (other.gameObject.transform.lossyScale == new Vector3 (1f, 1f, 1f)) {
-				if (trajectory == Vector3.left) {
-					if (other.gameObject.transform.position.y - transform.position.y > 0.5f) {
-						transform.position = new Vector3 (transform.position.x, other.gameObject.transform.position.y - 1f, transform.position.z);
-					} else if (other.gameObject.transform.position.y - transform.position.y < -0.5f) {
-						transform.position = new Vector3 (transform.position.x, other.gameObject.transform.position.y + 1f, transform.position.z);
-					} else {
-//						print ("Skip");
-					}
-				} else if (trajectory == Vector3.up) {
-					if (other.gameObject.transform.position.x - transform.position.x > 0.5f) {
-						transform.position = new Vector3 (other.gameObject.transform.position.x - 1f, transform.position.y, transform.position.z);
-					} else if (other.gameObject.transform.position.x - transform.position.x < -0.5f) {
-						transform.position = new Vector3 (other.gameObject.transform.position.x + 1f, transform.position.y, transform.position.z);
-					} else {
-//						print ("Skip");
-					}
-				} else if (trajectory == Vector3.right) {
-					if (other.gameObject.transform.position.y - transform.position.y > 0.5f) {
-						transform.position = new Vector3 (transform.position.x, other.gameObject.transform.position.y - 1f, transform.position.z);
-					} else if (other.gameObject.transform.position.y - transform.position.y < -0.5f) {
-						transform.position = new Vector3 (transform.position.x, other.gameObject.transform.position.y + 1f, transform.position.z);
-					} else {
-//						print ("Skip");
-					}
-				} else if (trajectory == Vector3.down) {
-					if (other.gameObject.transform.position.x - transform.position.x > 0.5f) {
-						transform.position = new Vector3 (other.gameObject.transform.position.x - 1f, transform.position.y, transform.position.z);
-					} else if (other.gameObject.transform.position.x - transform.position.x < -0.5f) {
-						transform.position = new Vector3 (other.gameObject.transform.position.x + 1f, transform.position.y, transform.position.z);
-					} else {
-//						print ("Skip");
-					}
-				}
-			}
 		}
 		else if(other.gameObject.tag == "Moveable"){
 			print ("MOVEABLE");
@@ -153,29 +159,28 @@ public class Zelda : MonoBehaviour {
 				other.transform.Translate(trajectory*16*pixel);
 		}
 	}
-	
-	
-	
-	
-	void OnTriggerEnter(Collider other) {
 
+	void OnTriggerEnter(Collider other) {
+		//print(colliding);
 		if (other.gameObject.tag == "Enemy") {
-			transform.Translate (trajectory * -2);
+			//transform.Translate (trajectory * -2);
+			bounce = 2f;
 			health--;
+
 			if(health < 1){
-				Application.LoadLevel("_Dungeon1_Troy");
+				Application.LoadLevel("_Dungeon1_Clara2");
 				health = MAX_HEALTH;
 			}
 		}
 
 		locked = true;
-		if (other.gameObject.tag == "Obstacle" && overlap(other)) {
-//			print("Locked");
-		}
-		else if(other.gameObject.tag == "Wall"){
-			transform.Translate (trajectory * -1 * pixel);
-//			print ("WALL");
-			locked = false;
+		if(other.gameObject.tag == "Wall" || other.gameObject.tag == "Obstacle"){
+			if(bounce > 0) {
+				bounce = 0;
+				transform.Translate (trajectory * 3 * pixel);
+			}
+			snap ();
+			pixelsMoved = 0;
 		}
 		else  locked = false;
 	}
@@ -235,6 +240,5 @@ public class Zelda : MonoBehaviour {
 			}
 		}
 		transform.position = dest;
-		
 	}
 }
