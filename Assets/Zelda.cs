@@ -10,8 +10,6 @@ public class Zelda : MonoBehaviour {
 	private int swinging;
 	private int colliding = 0;
 	private direction facing;
-	public static int health = 6;
-	public static int MAX_HEALTH = 6;
 	public Transform swordup;
 	public Transform swordright;
 	public Transform bomb;
@@ -21,7 +19,15 @@ public class Zelda : MonoBehaviour {
 	private float bounce = 0;
 	private int pixelsMoved = 0;
 	private float pixel = 0.0625f;
+	public bool invincible = false;
+	float invincibleTimer = 0;
 	// Width of a Zelda pixel (not a screen pixel) in meters
+	//for hud
+	public static int health = 2;
+	public static int MAX_HEALTH = 6;
+	public static int bombs = 100;
+	public static int keys = 10;
+	public static bool deity = false;
 	
 
 	void snap() {
@@ -51,15 +57,37 @@ public class Zelda : MonoBehaviour {
 	}
 	
 	void Update() {
-
+		if(invincible && invincibleTimer > 0){
+			invincibleTimer -= Time.deltaTime;
+		}
+		else if(invincible && invincibleTimer <= 0){
+			print ("DONE");
+			invincible = deity;
+		}
+		if(Input.GetKeyDown(KeyCode.G)){
+			deity = !deity;
+			invincible = deity;
+			if(deity){
+				bombs = 1;
+				health = MAX_HEALTH;
+			}
+		}
 		if(Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown (KeyCode.W)){
 			facing = direction.north;
+			if(!deity && invincibleTimer <= 0)
+				invincible = false;
 		}else if(Input.GetKeyDown (KeyCode.RightArrow) || Input.GetKeyDown (KeyCode.D)){
 			facing = direction.east;
+			if(!deity && invincibleTimer <= 0)
+				invincible = false;
 		}else if(Input.GetKeyDown (KeyCode.DownArrow) || Input.GetKeyDown (KeyCode.S)){
 			facing = direction.south;
+			if(!deity && invincibleTimer <= 0)
+				invincible = false;
 		}else if(Input.GetKeyDown (KeyCode.LeftArrow) || Input.GetKeyDown (KeyCode.A)){
 			facing = direction.west;
+			if(!deity && invincibleTimer <= 0)
+				invincible = false;
 		}
 
 		if (Input.GetKeyDown (KeyCode.X) || Input.GetKeyDown (KeyCode.Period)) {
@@ -72,11 +100,13 @@ public class Zelda : MonoBehaviour {
 			}
 		}
 		if (Input.GetKeyDown (KeyCode.Z) || Input.GetKeyDown (KeyCode.Comma)) {
-			if(!bombing){
+			if(!bombing && bombs > 0){
 				if(facing == direction.north || facing == direction.south)
-					Instantiate(bomb, transform.position + trajectory * 16 * pixel, Quaternion.identity);
+					Instantiate(bomb, transform.position + trajectory * 16 * pixel, Quaternion.Euler(0, 0, 180));
 				else
-					Instantiate(bomb, transform.position + trajectory * -16 * pixel, Quaternion.identity);
+					Instantiate(bomb, transform.position + trajectory * -16 * pixel, Quaternion.Euler(0, 0, 180));
+				if(!deity)
+					bombs--;
 				bombing = true;
 			}
 		}
@@ -162,18 +192,46 @@ public class Zelda : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other) {
 		//print(colliding);
-		if (other.gameObject.tag == "Enemy") {
+		if (other.gameObject.name == "Locked"){
+			if(keys > 0)
+				keys--;
+		}
+
+		if(other.gameObject.tag == "Item")
+		{
+			print ("ITEM");
+			switch(other.gameObject.name){
+			case "Heart":
+				if(health < MAX_HEALTH)
+					health += 2;
+				break;
+			case "Key":
+				keys++;
+				break;
+			case "Bombs":
+				bombs += 4;
+				break;
+			default:
+				print ("Unknown Item");
+				break;
+			}
+			Destroy(other.gameObject);
+		}
+
+		if (other.gameObject.tag == "Enemy" && !invincible) {
 			//transform.Translate (trajectory * -2);
 			bounce = 2f;
-			health--;
-
+			health --;
+			invincible = true;
+			invincibleTimer = 2f;
+			print("SUPER");
 			if(health < 1){
-				Application.LoadLevel("_Dungeon1_Clara2");
+				Application.LoadLevel("_Dungeon1_Troy2");
 				health = MAX_HEALTH;
 			}
 		}
 
-		locked = true;
+		//locked = true;
 		if(other.gameObject.tag == "Wall" || other.gameObject.tag == "Obstacle"){
 			if(bounce > 0) {
 				bounce = 0;
@@ -188,8 +246,10 @@ public class Zelda : MonoBehaviour {
 	public void MoveLink(direction dir, float dist){
 
 		Vector3 dest = transform.position;
+		invincible = true;
 
 		if(dist != 0){
+			print ("Move by " + dist);
 			switch (dir){
 			case direction.north:
 				dest.y += dist;
@@ -229,10 +289,12 @@ public class Zelda : MonoBehaviour {
 				dest.x -= trans.x;
 				break;
 			case direction.up:
-				dest.z += trans.z;
+				dest.x += 3;
+				dest.y += 7;
 				break;
 			case direction.down:
-				dest.z += trans.z;
+				dest.x -= 4;
+				dest.y -= 8;
 				break;
 			default:
 				print ("Broke");

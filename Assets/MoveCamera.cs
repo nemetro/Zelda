@@ -15,6 +15,7 @@ public class MoveCamera : MonoBehaviour {
 	static public MoveCamera S;
 	public Vector3 trans;
 	public Vector3 init;
+	public static int xcoord = 2, ycoord = 5;
 	public float easing = 0.05f;
 	
 	void Awake(){
@@ -22,30 +23,31 @@ public class MoveCamera : MonoBehaviour {
 		this.transform.position = init;
 	}
 
-	void Update(){
-	}
-	
 	public void nextRoom (direction dir) {
 
 		Vector3 dest = transform.position;
 		switch (dir){
 		case direction.north:
 			dest.y += trans.y;
+			ycoord--;
 			break;
 		case direction.south:
 			dest.y -= trans.y;
+			ycoord++;
 			break;
 		case direction.east:
 			dest.x += trans.x;
+			xcoord++;
 			break;
 		case direction.west:
 			dest.x -= trans.x;
+			xcoord--;
 			break;
 		case direction.up:
-			dest.z += trans.z;
+			dest.y += trans.y;
 			break;
 		case direction.down:
-			dest.z += trans.z;
+			dest.y -= trans.y;
 			break;
 		default:
 			print ("Broke");
