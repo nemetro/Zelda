@@ -6,12 +6,15 @@ public class Zelda : MonoBehaviour {
 	private Vector3 trajectory;
 	private bool locked = false;
 	private bool hasSword = true;
+	public bool bombing = false;
 	private int swinging;
 	private int colliding = 0;
 	private direction facing;
-	public int health = 6;
+	public static int health = 6;
+	public static int MAX_HEALTH = 6;
 	public Transform swordup;
 	public Transform swordright;
+	public Transform bomb;
 	public Vector3 trans;
 	public static Zelda Z;
 	private float bounce = 0;
@@ -67,6 +70,12 @@ public class Zelda : MonoBehaviour {
 				swinging = 0;
 			}
 		}
+		if (Input.GetKeyDown (KeyCode.Z) || Input.GetKeyDown (KeyCode.Comma)) {
+			if(!bombing) {
+				Instantiate(bomb, transform.position + trajectory * 16 * pixel, Quaternion.identity);
+				bombing = true;
+			}
+		}
 	}
 	// Update is called once per frame
 	void FixedUpdate () {
@@ -85,6 +94,7 @@ public class Zelda : MonoBehaviour {
 			swinging++;
 			return;
 		}
+
 		if(locked) return;
 		Vector3 oldTrajectory = trajectory;
 		if (Input.GetKey (KeyCode.LeftArrow) || Input.GetKey (KeyCode.A)) {
@@ -128,6 +138,15 @@ public class Zelda : MonoBehaviour {
 	void OnTriggerStay(Collider other) {
 		if(other.gameObject.tag == "Wall" || other.gameObject.tag == "Obstacle"){
 			//transform.Translate (trajectory * -1 * pixel);
+		}
+		else if(other.gameObject.tag == "Moveable"){
+			print ("MOVEABLE");
+			transform.Translate (trajectory *-1* pixel);
+			other.gameObject.tag = "Obstacle";
+			if (trajectory == Vector3.up || trajectory == Vector3.down)
+				other.transform.Translate(trajectory*-16*pixel);
+			else
+				other.transform.Translate(trajectory*16*pixel);
 		}
 	}
 

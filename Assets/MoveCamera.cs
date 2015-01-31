@@ -23,14 +23,6 @@ public class MoveCamera : MonoBehaviour {
 	}
 
 	void Update(){
-//		if(Input.GetKeyDown(KeyCode.UpArrow))
-//			nextRoom (direction.north);
-//		if(Input.GetKeyDown(KeyCode.RightArrow))
-//			nextRoom (direction.east);
-//		if(Input.GetKeyDown(KeyCode.DownArrow))
-//			nextRoom (direction.south);
-//		if(Input.GetKeyDown(KeyCode.LeftArrow))
-//			nextRoom (direction.west);
 	}
 	
 	public void nextRoom (direction dir) {
