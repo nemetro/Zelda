@@ -18,6 +18,8 @@ public class Zelda : MonoBehaviour {
 	private float bounce = 0;
 	private int pixelsMoved = 0;
 	private float pixel = 0.0625f;
+	private RaycastHit hit;
+	private int layermask = 1 << 8;
 	public bool invincible = false;
 	float invincibleTimer = 0;
 	// Width of a Zelda pixel (not a screen pixel) in meters
@@ -125,12 +127,21 @@ public class Zelda : MonoBehaviour {
 	void FixedUpdate () {
 		if(bounce > 0) {
 			if(locked) {
+				print ("Locked");
 				bounce = 0;
 				return;
 			}
 			else {
-				bounce -= 5*pixel;
-				//transform.Translate (trajectory * -5f * pixel);
+				bounce -= 5f*pixel;
+				Debug.DrawRay(transform.position, -1*(5f*pixel + 0.5f)*trajectory, Color.red, 1f);
+				if(!Physics.Raycast(new Ray(transform.position, -1*trajectory), out hit, 0.5f + 5f*pixel, layermask)) {
+					transform.Translate (trajectory * -5f * pixel);
+					print ("Bounced");
+				}
+				else {
+					print ("Bounce failed");
+					transform.Translate (trajectory * -1 * (hit.distance - 1f));
+				}
 				return;
 			}
 		}
@@ -141,8 +152,7 @@ public class Zelda : MonoBehaviour {
 
 		if(locked) return;
 		Vector3 oldTrajectory = trajectory;
-		RaycastHit hit;
-		int layermask = 1 << 8;
+		
 
 		if (Input.GetKey (KeyCode.LeftArrow) || Input.GetKey (KeyCode.A)) {
 			trajectory = Vector3.right;
