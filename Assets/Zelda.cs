@@ -30,9 +30,9 @@ public class Zelda : MonoBehaviour {
 	
 
 	void snap() {
-		Vector3 target = new Vector3(Mathf.Round(transform.position.x * 2) / 2, Mathf.Round(transform.position.y * 2) / 2, 0.5f);
-		RaycastHit hit;
-		int layermask = 1 << 8;
+		//Vector3 target = new Vector3(Mathf.Round(transform.position.x * 2) / 2, Mathf.Round(transform.position.y * 2) / 2, 0.5f);
+		//RaycastHit hit;
+		//int layermask = 1 << 8;
 		/*if(Physics.Raycast(target - 0.5f*Vector3.up - 0.5f*Vector3.left, (Vector3.up + Vector3.left), out hit, Mathf.Sqrt (2f), layermask)) {
 			Debug.DrawRay(target - 0.5f*Vector3.up - 0.5f*Vector3.left, Mathf.Sqrt(2)/2f * (Vector3.up + Vector3.left), Color.red, 1f);
 			print ("Ray hit " + hit.collider.tag + ", " + hit.collider.name + ", " + hit.collider.gameObject.layer);
@@ -130,7 +130,7 @@ public class Zelda : MonoBehaviour {
 			}
 			else {
 				bounce -= 5*pixel;
-				transform.Translate (trajectory * -5f * pixel);
+				//transform.Translate (trajectory * -5f * pixel);
 				return;
 			}
 		}
@@ -147,30 +147,38 @@ public class Zelda : MonoBehaviour {
 		if (Input.GetKey (KeyCode.LeftArrow) || Input.GetKey (KeyCode.A)) {
 			trajectory = Vector3.right;
 			facing = direction.west;
-			if(!Physics.Raycast(new Ray(transform.position - (pixel - 0.5f)*trajectory, -1 * trajectory), out hit, 1f, layermask)) {
+			Vector3 origin = transform.position - (pixel - 0.5f)*trajectory - pixel * Vector3.up;
+			Vector3 dir = -1 * trajectory;
+			Debug.DrawRay(origin, dir, Color.red);
+			if(!Physics.Raycast(new Ray(origin, dir), out hit, 1f, layermask)) {
 				transform.Translate (trajectory * pixel);
 			}
 		} else if (Input.GetKey (KeyCode.UpArrow) || Input.GetKey (KeyCode.W)) {
 			trajectory = Vector3.up;
 			facing = direction.north;
-			if(!Physics.Raycast(new Ray(transform.position + (pixel - 0.5f)*trajectory, trajectory), out hit, 1f, layermask)) {
+			Vector3 origin = transform.position + (pixel - 0.5f)*trajectory;
+			Debug.DrawRay(origin, trajectory, Color.red);
+			if(!Physics.Raycast(new Ray(origin, trajectory), out hit, 0.5f, layermask)) {
 				transform.Translate (trajectory * pixel);
 			}
 		} else if (Input.GetKey (KeyCode.RightArrow) || Input.GetKey (KeyCode.D)) {
 			trajectory = Vector3.left;
 			facing = direction.east;
-			if(!Physics.Raycast(new Ray(transform.position - (pixel - 0.5f)*trajectory, -1 * trajectory), out hit, 1f, layermask)) {
+			Vector3 origin = transform.position - (pixel - 0.5f)*trajectory - pixel * Vector3.up;
+			Vector3 dir =  -1 * trajectory;
+			Debug.DrawRay(origin, dir, Color.red);
+			if(!Physics.Raycast(new Ray(origin, dir), out hit, 1f, layermask)) {
 				transform.Translate (trajectory * pixel);
 			}
 		} else if (Input.GetKey (KeyCode.DownArrow) || Input.GetKey (KeyCode.S)) {
 			trajectory = Vector3.down;
 			facing = direction.south;
-			Vector3 perpendicular = new Vector3(trajectory.y, trajectory.x, trajectory.z); // Flip x and y
-			if(!Physics.Raycast(new Ray(transform.position + (pixel - 0.5f)*trajectory, trajectory), out hit, 1f, layermask)) {
+			Vector3 origin = transform.position + (pixel - 0.5f)*trajectory;
+			Debug.DrawRay(origin, trajectory, Color.red);
+			if(!Physics.Raycast(new Ray(origin, trajectory), out hit, 1f, layermask)) {
 				transform.Translate (trajectory * pixel);
 			}
 		}
-		else return;
 
 		if(trajectory != oldTrajectory) {
 			snap();
@@ -196,10 +204,7 @@ public class Zelda : MonoBehaviour {
 		}
 	}
 	void OnTriggerStay(Collider other) {
-		if(other.gameObject.tag == "Wall" || other.gameObject.tag == "Obstacle"){
-			//transform.Translate (trajectory * -1 * pixel);
-		}
-		else if(other.gameObject.tag == "Moveable"){
+		if(other.gameObject.tag == "Moveable"){
 			print ("MOVEABLE");
 			//transform.Translate (trajectory *-1* pixel);
 			other.gameObject.tag = "Obstacle";
@@ -246,21 +251,10 @@ public class Zelda : MonoBehaviour {
 			invincibleTimer = 2f;
 			print("SUPER");
 			if(health < 1){
-				Application.LoadLevel("_Dungeon1_Troy2");
+				Application.LoadLevel("_Dungeon1_Clara3");
 				health = MAX_HEALTH;
 			}
 		}
-
-		//locked = true;
-		if(other.gameObject.tag == "Wall" || other.gameObject.tag == "Obstacle"){
-			if(bounce > 0) {
-				bounce = 0;
-				transform.Translate (trajectory * 3 * pixel);
-			}
-			snap ();
-			pixelsMoved = 0;
-		}
-		else  locked = false;
 	}
 
 	public void MoveLink(direction dir, float dist){
