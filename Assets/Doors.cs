@@ -17,27 +17,27 @@ public class Doors : MonoBehaviour {
 		switch (door.tag){
 		case "North":
 			MoveCamera.S.nextRoom (direction.north);
-			Zelda.Z.MoveLink(direction.north, 0);
+			Zelda.Z.MoveLink(direction.north);
 			break; 
 		case "East":
 			MoveCamera.S.nextRoom (direction.east);
-			Zelda.Z.MoveLink(direction.east, 0);
+			Zelda.Z.MoveLink(direction.east);
 			break;
 		case "South":
 			MoveCamera.S.nextRoom (direction.south);
-			Zelda.Z.MoveLink(direction.south, 0);
+			Zelda.Z.MoveLink(direction.south);
 			break; 
 		case "West":
 			MoveCamera.S.nextRoom (direction.west);
-			Zelda.Z.MoveLink(direction.west, 0);
+			Zelda.Z.MoveLink(direction.west);
 			break;
 		case "Down":
 			MoveCamera.S.nextRoom (direction.down);
-			Zelda.Z.MoveLink(direction.down, 0);
+			Zelda.Z.MoveLink(direction.down);
 			break;
 		case "Up":
 			MoveCamera.S.nextRoom (direction.up);
-			Zelda.Z.MoveLink(direction.up, 0);
+			Zelda.Z.MoveLink(direction.up);
 			break;
 		default:
 			print ("Broke");

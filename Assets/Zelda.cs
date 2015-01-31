@@ -24,6 +24,15 @@ public class Zelda : MonoBehaviour {
 	
 
 	void snap() {
+		Vector3 target = new Vector3(Mathf.Round(transform.position.x * 2) / 2, Mathf.Round(transform.position.y * 2) / 2,  transform.position.z);
+		RaycastHit hit;
+		if(Physics.Raycast(target - 0.5f*Vector3.up - 0.5f*Vector3.left, Mathf.Sqrt(2)/2f * (Vector3.up + Vector3.left), out hit)) {
+			Debug.DrawLine(target - 0.5f*Vector3.up - 0.5f*Vector3.left, hit.point);
+			print ("Ray 1 hit");
+		}
+		/*if(Physics.Raycast(target - 0.5f*Vector3.up - 0.5f*Vector3.right, Vector3.up + Vector3.right, Mathf.Sqrt(2))) {
+			print ("Ray 2 hit");
+		}*/
 		transform.position = new Vector3(Mathf.Round(transform.position.x * 2) / 2, Mathf.Round(transform.position.y * 2) / 2,  transform.position.z);
 		/*if(trajectory == Vector3.right || trajectory == Vector3.left) {
 			float pixel = 16f * transform.position.y - 24f; // Pixels from topmost pixel of topmost floor tile
@@ -112,13 +121,16 @@ public class Zelda : MonoBehaviour {
 		}
 		else return;
 		if(trajectory != oldTrajectory) {
-			while(pixelsMoved != 0) {
+			snap();
+			/*while(pixelsMoved != 0) {
 				pixelsMoved = (pixelsMoved + 1) % 8;
 				transform.Translate (oldTrajectory * pixel);
-			}
+			}*/
 		}
-		transform.Translate (trajectory * pixel);
-		pixelsMoved = (pixelsMoved + 1) % 8;
+		else {
+			transform.Translate (trajectory * pixel);
+		}
+		//pixelsMoved = (pixelsMoved + 1) % 8;
 	}
 	
 	
