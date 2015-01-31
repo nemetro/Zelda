@@ -30,12 +30,14 @@ public class Zelda : MonoBehaviour {
 	
 
 	void snap() {
-		Vector3 target = new Vector3(Mathf.Round(transform.position.x * 2) / 2, Mathf.Round(transform.position.y * 2) / 2,  transform.position.z);
+		Vector3 target = new Vector3(Mathf.Round(transform.position.x * 2) / 2, Mathf.Round(transform.position.y * 2) / 2, 0.5f);
 		RaycastHit hit;
-		if(Physics.Raycast(target - 0.5f*Vector3.up - 0.5f*Vector3.left, Mathf.Sqrt(2)/2f * (Vector3.up + Vector3.left), out hit)) {
-			Debug.DrawLine(target - 0.5f*Vector3.up - 0.5f*Vector3.left, hit.point);
-			print ("Ray 1 hit");
-		}
+		int layermask = 1 << 8;
+		/*if(Physics.Raycast(target - 0.5f*Vector3.up - 0.5f*Vector3.left, (Vector3.up + Vector3.left), out hit, Mathf.Sqrt (2f), layermask)) {
+			Debug.DrawRay(target - 0.5f*Vector3.up - 0.5f*Vector3.left, Mathf.Sqrt(2)/2f * (Vector3.up + Vector3.left), Color.red, 1f);
+			print ("Ray hit " + hit.collider.tag + ", " + hit.collider.name + ", " + hit.collider.gameObject.layer);
+			//print ("Ray 1 hit");
+		}*/
 		/*if(Physics.Raycast(target - 0.5f*Vector3.up - 0.5f*Vector3.right, Vector3.up + Vector3.right, Mathf.Sqrt(2))) {
 			print ("Ray 2 hit");
 		}*/
@@ -103,15 +105,11 @@ public class Zelda : MonoBehaviour {
 				if(facing == direction.north || facing == direction.south)
 					Instantiate(swordup, transform.position + trajectory * 12 * pixel, Quaternion.identity);
 				else
-					Instantiate(swordright, transform.position + trajectory * 12 * pixel, Quaternion.identity);
+					Instantiate(swordright, transform.position - trajectory * 12 * pixel, Quaternion.identity);
 				swinging = 0;
 			}
 		}
 		if (Input.GetKeyDown (KeyCode.Z) || Input.GetKeyDown (KeyCode.Comma)) {
-<<<<<<< HEAD
-			if(!bombing) {
-				Instantiate(bomb, transform.position + trajectory * 16 * pixel, Quaternion.identity);
-=======
 			if(!bombing && bombs > 0){
 				if(facing == direction.north || facing == direction.south)
 					Instantiate(bomb, transform.position + trajectory * 16 * pixel, Quaternion.Euler(0, 0, 180));
@@ -119,7 +117,6 @@ public class Zelda : MonoBehaviour {
 					Instantiate(bomb, transform.position + trajectory * -16 * pixel, Quaternion.Euler(0, 0, 180));
 				if(!deity)
 					bombs--;
->>>>>>> 9550c422ab1cf9ee608d84912a1121d83d43c4ed
 				bombing = true;
 			}
 		}
@@ -144,20 +141,37 @@ public class Zelda : MonoBehaviour {
 
 		if(locked) return;
 		Vector3 oldTrajectory = trajectory;
+		RaycastHit hit;
+		int layermask = 1 << 8;
+
 		if (Input.GetKey (KeyCode.LeftArrow) || Input.GetKey (KeyCode.A)) {
 			trajectory = Vector3.right;
 			facing = direction.west;
+			if(!Physics.Raycast(new Ray(transform.position - (pixel - 0.5f)*trajectory, -1 * trajectory), out hit, 1f, layermask)) {
+				transform.Translate (trajectory * pixel);
+			}
 		} else if (Input.GetKey (KeyCode.UpArrow) || Input.GetKey (KeyCode.W)) {
 			trajectory = Vector3.up;
 			facing = direction.north;
+			if(!Physics.Raycast(new Ray(transform.position + (pixel - 0.5f)*trajectory, trajectory), out hit, 1f, layermask)) {
+				transform.Translate (trajectory * pixel);
+			}
 		} else if (Input.GetKey (KeyCode.RightArrow) || Input.GetKey (KeyCode.D)) {
 			trajectory = Vector3.left;
 			facing = direction.east;
+			if(!Physics.Raycast(new Ray(transform.position - (pixel - 0.5f)*trajectory, -1 * trajectory), out hit, 1f, layermask)) {
+				transform.Translate (trajectory * pixel);
+			}
 		} else if (Input.GetKey (KeyCode.DownArrow) || Input.GetKey (KeyCode.S)) {
 			trajectory = Vector3.down;
 			facing = direction.south;
+			Vector3 perpendicular = new Vector3(trajectory.y, trajectory.x, trajectory.z); // Flip x and y
+			if(!Physics.Raycast(new Ray(transform.position + (pixel - 0.5f)*trajectory, trajectory), out hit, 1f, layermask)) {
+				transform.Translate (trajectory * pixel);
+			}
 		}
 		else return;
+
 		if(trajectory != oldTrajectory) {
 			snap();
 			/*while(pixelsMoved != 0) {
@@ -165,10 +179,6 @@ public class Zelda : MonoBehaviour {
 				transform.Translate (oldTrajectory * pixel);
 			}*/
 		}
-		else {
-			transform.Translate (trajectory * pixel);
-		}
-		//pixelsMoved = (pixelsMoved + 1) % 8;
 	}
 	
 	
@@ -191,7 +201,7 @@ public class Zelda : MonoBehaviour {
 		}
 		else if(other.gameObject.tag == "Moveable"){
 			print ("MOVEABLE");
-			transform.Translate (trajectory *-1* pixel);
+			//transform.Translate (trajectory *-1* pixel);
 			other.gameObject.tag = "Obstacle";
 			if (trajectory == Vector3.up || trajectory == Vector3.down)
 				other.transform.Translate(trajectory*-16*pixel);
@@ -231,11 +241,6 @@ public class Zelda : MonoBehaviour {
 		if (other.gameObject.tag == "Enemy" && !invincible) {
 			//transform.Translate (trajectory * -2);
 			bounce = 2f;
-<<<<<<< HEAD
-			health--;
-			if(health < 1)
-				Application.LoadLevel("_Dungeon1_Clara2");
-=======
 			health --;
 			invincible = true;
 			invincibleTimer = 2f;
@@ -244,7 +249,6 @@ public class Zelda : MonoBehaviour {
 				Application.LoadLevel("_Dungeon1_Troy2");
 				health = MAX_HEALTH;
 			}
->>>>>>> 9550c422ab1cf9ee608d84912a1121d83d43c4ed
 		}
 
 		//locked = true;
@@ -259,33 +263,9 @@ public class Zelda : MonoBehaviour {
 		else  locked = false;
 	}
 
-	public void MoveLink(direction dir){
+	public void MoveLink(direction dir, float dist){
 		print (dir);
 		Vector3 dest = transform.position;
-<<<<<<< HEAD
-		switch (dir){
-		case direction.north:
-			dest.y += trans.y;
-			break;
-		case direction.south:
-			dest.y -= trans.y;
-			break;
-		case direction.east:
-			dest.x += trans.x;
-			break;
-		case direction.west:
-			dest.x -= trans.x;
-			break;
-		case direction.up:
-			dest.z += trans.z;
-			break;
-		case direction.down:
-			dest.z += trans.z;
-			break;
-		default:
-			print ("Broke");
-			break;
-=======
 		invincible = true;
 
 		if(dist != 0){
@@ -340,7 +320,6 @@ public class Zelda : MonoBehaviour {
 				print ("Broke");
 				break;
 			}
->>>>>>> 9550c422ab1cf9ee608d84912a1121d83d43c4ed
 		}
 		transform.position = dest;
 	}
