@@ -54,6 +54,11 @@ public class Enemy : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other) {
 
+		if(other.gameObject.tag == "Link"){
+			Zelda.health -= damage;
+			print (Zelda.health);
+			print ("HIT");
+		}
 		if (other.gameObject.tag == "Wall" || other.gameObject.tag == "Obstacle") {
 			trajectory = -1 * trajectory;
 			transform.Translate (pixel * trajectory);
