@@ -9,6 +9,10 @@ public class Enemy : MonoBehaviour {
 	public Vector3 trajectory = Vector3.zero;
 	private int frames = 51; 
 	public float pixel = .0625f;
+	public direction facing;
+	private RaycastHit hit;
+	private int layermask = 1 << 8;
+
 	// Use this for initialization
 	void Start () {
 		if(type == EnemyTypes.Skelleton) {
@@ -23,10 +27,7 @@ public class Enemy : MonoBehaviour {
 	
 	void FixedUpdate () {
 		frames++;
-		if(frames < 20) {
-			transform.Translate (trajectory*pixel);
-		}
-		else {
+		if(frames > 20) {
 			// Pick a random direction
 			if(type == EnemyTypes.Bat) {
 				trajectory =  new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0f);
@@ -39,17 +40,41 @@ public class Enemy : MonoBehaviour {
 				else if(trajectory == Vector3.up || trajectory == Vector3.down || trajectory == Vector3.forward || trajectory == Vector3.back) {
 					trajectory = Vector3.right;
 				}
-
+				
 				if(Random.Range(-1f, 1f) < 0f) {
 					trajectory = -1f * trajectory;
 				}
 			}
-
+			
 			frames = 0;
 		}
+		else {
+			if(type == EnemyTypes.Bat) {
+				transform.Translate (trajectory*pixel);
+				return;
+			}
+		}
+
+		Vector3 origin = transform.position;
+		Vector3 dir = trajectory;
+		if(trajectory == Vector3.left || trajectory == Vector3.right) {
+			//dir = -1 * trajectory;
+		}
+		Debug.DrawRay(origin, dir, Color.cyan);
+		if(!Physics.Raycast(new Ray(origin, dir), out hit, 0.5f + pixel, layermask)) {
+			transform.Translate (trajectory * pixel);
+			//print ("Hit nothing");
+		}
+		else {
+			//print ("Hit a thing");
+		}
+
+
+
 	}
 
 	void OnTriggerStay(Collider other) {
+
 	}
 
 	void OnTriggerEnter(Collider other) {
@@ -59,9 +84,15 @@ public class Enemy : MonoBehaviour {
 			print (Zelda.health);
 			print ("HIT");
 		}
-		if (other.gameObject.tag == "Wall" || other.gameObject.tag == "Obstacle") {
+		if(other.gameObject.name == "door") {
 			trajectory = -1 * trajectory;
 			transform.Translate (pixel * trajectory);
+		}
+		if (other.gameObject.tag == "Wall" || other.gameObject.tag == "Obstacle") {
+			if(type == EnemyTypes.Bat) {
+				trajectory = -1 * trajectory;
+				transform.Translate (trajectory * 3 * pixel);
+			}
 		}
 		
 		if (other.gameObject.tag == "Sword") {
