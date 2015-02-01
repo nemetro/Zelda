@@ -24,10 +24,10 @@ public class Zelda : MonoBehaviour {
 	float invincibleTimer = 0;
 	// Width of a Zelda pixel (not a screen pixel) in meters
 	//for hud
-	public static int health = 2;
-	public static int MAX_HEALTH = 6;
-	public static int bombs = 100;
-	public static int keys = 10;
+	public static int health = 6;
+	public static int MAX_HEALTH = 8;
+	public static int bombs = 2;
+	public static int keys = 0;
 	public static bool deity = false;
 	
 
@@ -73,14 +73,14 @@ public class Zelda : MonoBehaviour {
 			invincibleTimer -= Time.deltaTime;
 		}
 		else if(invincible && invincibleTimer <= 0){
-			print ("DONE");
 			invincible = deity;
 		}
 		if(Input.GetKeyDown(KeyCode.G)){
 			deity = !deity;
 			invincible = deity;
 			if(deity){
-				bombs = 1;
+				if(bombs == 0)
+					bombs = 1;
 				health = MAX_HEALTH;
 			}
 		}
@@ -104,10 +104,22 @@ public class Zelda : MonoBehaviour {
 
 		if (Input.GetKeyDown (KeyCode.X) || Input.GetKeyDown (KeyCode.Period)) {
 			if(hasSword) {
-				if(facing == direction.north || facing == direction.south)
-					Instantiate(swordup, transform.position + trajectory * 12 * pixel, Quaternion.identity);
-				else
-					Instantiate(swordright, transform.position - trajectory * 12 * pixel, Quaternion.identity);
+				switch(facing){
+				case direction.north:
+					Instantiate(swordup, transform.position + trajectory * 12 * pixel, Quaternion.Euler(0, 0, 180));
+					break;
+				case direction.south:
+					Instantiate(swordup, transform.position + trajectory * 12 * pixel, Quaternion.Euler(0, 0, 0));
+					break;
+				case direction.east:
+					Instantiate(swordup, transform.position + trajectory * -12 * pixel, Quaternion.Euler(0, 0, 90));
+					break;
+				case direction.west:
+					Instantiate(swordup, transform.position + trajectory * -12 * pixel, Quaternion.Euler(0, 0, 270));
+					break;
+				default:
+					break;
+				}
 				swinging = 0;
 			}
 		}
@@ -231,7 +243,6 @@ public class Zelda : MonoBehaviour {
 			if(keys > 0)
 				keys--;
 		}
-
 		if(other.gameObject.tag == "Item")
 		{
 			print ("ITEM");
@@ -259,7 +270,6 @@ public class Zelda : MonoBehaviour {
 			health --;
 			invincible = true;
 			invincibleTimer = 2f;
-			print("SUPER");
 			if(health < 1){
 				Application.LoadLevel("_Dungeon1_Clara3");
 				health = MAX_HEALTH;

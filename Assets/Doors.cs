@@ -79,6 +79,4 @@ public class Doors : MonoBehaviour {
 			break;
 		}
 	}
-
-
 }
