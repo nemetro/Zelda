@@ -145,8 +145,10 @@ public class Zelda : MonoBehaviour {
 			}
 			else {
 				bounce -= 5f*pixel;
-				Debug.DrawRay(transform.position, -1*(5f*pixel + 0.5f)*trajectory, Color.red, 1f);
-				if(!Physics.Raycast(new Ray(transform.position, -1*trajectory), out hit, 0.5f + 5f*pixel, layermask)) {
+				Vector3 orig = transform.position;
+				Vector3 dir = -1*(5f*pixel + 0.5f)*trajectory;
+				Debug.DrawRay(orig, dir, Color.red, 5f);
+				if(!Physics.Raycast(new Ray(transform.position, -1 * trajectory), out hit, 0.5f + 5f*pixel, layermask)) {
 					transform.Translate (trajectory * -5f * pixel);
 					print ("Bounced");
 				}
@@ -162,7 +164,7 @@ public class Zelda : MonoBehaviour {
 			return;
 		}
 
-		if(locked) return;
+		//if(locked) return;
 		Vector3 oldTrajectory = trajectory;
 		
 
@@ -219,13 +221,17 @@ public class Zelda : MonoBehaviour {
 	}
 	
 	void OnTriggerExit(Collider other) {
-		if (other.gameObject.tag == "Obstacle" || other.gameObject.tag == "Wall") {
+		if (other.gameObject.layer == 8) {
 			colliding--;
 			//print ("Unlocked");
-			locked = false;
+			if (colliding == 0) locked = false;
 		}
 	}
 	void OnTriggerStay(Collider other) {
+		if(other.gameObject.layer == 8) {
+			//transform.Translate (trajectory * pixel);
+		}
+
 		if(other.gameObject.tag == "Moveable"){
 			print ("MOVEABLE");
 			//transform.Translate (trajectory *-1* pixel);
@@ -242,6 +248,10 @@ public class Zelda : MonoBehaviour {
 		if (other.gameObject.name == "Locked"){
 			if(keys > 0)
 				keys--;
+		}
+		if(other.gameObject.layer == 8) {
+			locked = true;
+			colliding++;
 		}
 		if(other.gameObject.tag == "Item")
 		{
