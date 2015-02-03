@@ -11,7 +11,6 @@ public class Zelda : MonoBehaviour {
 	private int colliding = 0;
 	private direction facing;
 	public Transform swordup;
-	public Transform swordright;
 	public Transform bomb;
 	public Vector3 trans;
 	public static Zelda Z;
@@ -27,8 +26,10 @@ public class Zelda : MonoBehaviour {
 	public static int health = 6;
 	public static int MAX_HEALTH = 8;
 	public static int bombs = 2;
-	public static int keys = 0;
+	public static int keys = 1;
 	public static bool deity = false;
+	public static bool map = false;
+	public static bool compass = false;
 	
 
 	void snap() {
@@ -69,6 +70,8 @@ public class Zelda : MonoBehaviour {
 	}
 	
 	void Update() {
+		if (colliding == 0) locked = false;
+
 		if(invincible && invincibleTimer > 0){
 			invincibleTimer -= Time.deltaTime;
 		}
@@ -86,20 +89,20 @@ public class Zelda : MonoBehaviour {
 		}
 		if(Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown (KeyCode.W)){
 			facing = direction.north;
-			if(!deity && invincibleTimer <= 0)
-				invincible = false;
+			if(invincibleTimer <= 0)
+				invincible = deity;
 		}else if(Input.GetKeyDown (KeyCode.RightArrow) || Input.GetKeyDown (KeyCode.D)){
 			facing = direction.east;
-			if(!deity && invincibleTimer <= 0)
-				invincible = false;
+			if(invincibleTimer <= 0)
+				invincible = deity;
 		}else if(Input.GetKeyDown (KeyCode.DownArrow) || Input.GetKeyDown (KeyCode.S)){
 			facing = direction.south;
-			if(!deity && invincibleTimer <= 0)
-				invincible = false;
+			if(invincibleTimer <= 0)
+				invincible = deity;
 		}else if(Input.GetKeyDown (KeyCode.LeftArrow) || Input.GetKeyDown (KeyCode.A)){
 			facing = direction.west;
-			if(!deity && invincibleTimer <= 0)
-				invincible = false;
+			if(invincibleTimer <= 0)
+				invincible = deity;
 		}
 
 		if (Input.GetKeyDown (KeyCode.X) || Input.GetKeyDown (KeyCode.Period)) {
@@ -245,10 +248,6 @@ public class Zelda : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other) {
 		//print(colliding);
-		if (other.gameObject.name == "Locked"){
-			if(keys > 0)
-				keys--;
-		}
 		if(other.gameObject.layer == 8) {
 			locked = true;
 			colliding++;
@@ -267,6 +266,12 @@ public class Zelda : MonoBehaviour {
 			case "Bombs":
 				bombs += 4;
 				break;
+			case "Map":
+				map = true;
+				break;
+			case "Compass":
+				compass = true;
+				break;
 			default:
 				print ("Unknown Item");
 				break;
@@ -281,8 +286,15 @@ public class Zelda : MonoBehaviour {
 			invincible = true;
 			invincibleTimer = 2f;
 			if(health < 1){
-				Application.LoadLevel("_Dungeon1_Clara3");
+				Application.LoadLevel("_Intro");
 				health = MAX_HEALTH;
+			}
+		}
+		if (other.gameObject.name == "Locked"){
+			if(keys > 0){
+				keys--;
+				colliding--;
+				locked = false;
 			}
 		}
 	}

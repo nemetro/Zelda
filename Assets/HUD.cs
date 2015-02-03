@@ -9,7 +9,10 @@ public class HUD : MonoBehaviour {
 	Text keys;
 	Text bombs;
 	Text level;
-	Text map;
+	Image map;
+	Text xy;
+	Text compass;
+	Text deity;
 
 	void Start () {
 		health = transform.Find("Life").gameObject.GetComponent<Text>(); 
@@ -20,11 +23,13 @@ public class HUD : MonoBehaviour {
 		keys.text= Zelda.keys.ToString();
 		bombs = transform.Find("Bombs").gameObject.GetComponent<Text>(); 
 		bombs.text= Zelda.bombs.ToString();
-		map = transform.Find("Map").gameObject.GetComponent<Text>();
+		xy = transform.Find("Coords").gameObject.GetComponent<Text>();
+		map = transform.Find("Map").gameObject.GetComponent<Image>();
+		deity = transform.Find("Deity").gameObject.GetComponent<Text>(); 
 	}
 	
 	void Update () {
-
+		//life
 		string newLife = "";
 		for(int i = 0; i < Zelda.health; i++){
 			if(i%2f == 0)
@@ -41,10 +46,20 @@ public class HUD : MonoBehaviour {
 				newLifeT += "3";
 		}
 		healthT.text = newLifeT;
+		//Deity
+		if(Zelda.deity)
+			deity.color = Color.yellow;
+		else
+			deity.color = Color.gray;
+
+		//items
 		keys.text = Zelda.keys.ToString();
 		bombs.text = Zelda.bombs.ToString();
 
+		//map
 		string coords = "(" + MoveCamera.xcoord + "," + MoveCamera.ycoord + ")" ;
-		map.text = coords;
+		xy.text = coords;
+		if(Zelda.map)
+			Destroy(map);
 	}
 }

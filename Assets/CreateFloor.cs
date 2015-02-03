@@ -8,7 +8,7 @@ public class CreateFloor : MonoBehaviour {
 	float yWall = 4f;
 
 	void Start () {
-		float x=0.5f + xWall/2f, y=0.5f + yWall/2f;
+		float x=xWall/2f, y=yWall/2f;
 		int xBlocks=0, yBlocks=0;
 		while(xBlocks < 12*6){
 							print (xBlocks);
@@ -29,7 +29,7 @@ public class CreateFloor : MonoBehaviour {
 				yBlocks++;
 			}
 			yBlocks = 0;
-			y = 0.5f + yWall/2f;
+			y = yWall/2f;
 			
 			x += 1f;
 			xBlocks++;
