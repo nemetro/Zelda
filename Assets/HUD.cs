@@ -12,6 +12,7 @@ public class HUD : MonoBehaviour {
 	Image map;
 	Text xy;
 	Text compass;
+	Text deity;
 
 	void Start () {
 		health = transform.Find("Life").gameObject.GetComponent<Text>(); 
@@ -24,6 +25,7 @@ public class HUD : MonoBehaviour {
 		bombs.text= Zelda.bombs.ToString();
 		xy = transform.Find("Coords").gameObject.GetComponent<Text>();
 		map = transform.Find("Map").gameObject.GetComponent<Image>();
+		deity = transform.Find("Deity").gameObject.GetComponent<Text>(); 
 	}
 	
 	void Update () {
@@ -44,6 +46,11 @@ public class HUD : MonoBehaviour {
 				newLifeT += "3";
 		}
 		healthT.text = newLifeT;
+		//Deity
+		if(Zelda.deity)
+			deity.color = Color.yellow;
+		else
+			deity.color = Color.gray;
 
 		//items
 		keys.text = Zelda.keys.ToString();

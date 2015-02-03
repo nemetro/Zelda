@@ -152,20 +152,20 @@ public class Enemy : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other) {
 
-		if(other.gameObject.tag == "Link"){
+		/*if(other.gameObject.tag == "Link"){
 			Zelda.health -= damage;
 			print (Zelda.health);
 			print ("HIT");
-		}
+		}*/
 		if(other.gameObject.name == "door") {
 			trajectory = -1 * trajectory;
 			transform.Translate (pixel * trajectory);
 		}
 		if (other.gameObject.tag == "Wall" || other.gameObject.tag == "Obstacle") {
-			if(type == EnemyTypes.Bat) {
+			//if(type == EnemyTypes.Bat) {
 				trajectory = -1 * trajectory;
 				transform.Translate (trajectory * 3 * pixel);
-			}
+			//}
 		}
 		
 		if (other.gameObject.tag == "Sword") {
