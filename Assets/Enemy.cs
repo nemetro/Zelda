@@ -73,7 +73,8 @@ public class Enemy : MonoBehaviour {
 				trajectory.Normalize ();
 			}
 			else if(type == EnemyTypes.Skelleton) {
-				if(trajectory == Vector3.left || trajectory == Vector3.right) {
+				return;
+				/*if(trajectory == Vector3.left || trajectory == Vector3.right) {
 					trajectory = Vector3.up;
 				}
 				else if(trajectory == Vector3.up || trajectory == Vector3.down || trajectory == Vector3.forward || trajectory == Vector3.back) {
@@ -82,7 +83,7 @@ public class Enemy : MonoBehaviour {
 				
 				if(Random.Range(-1f, 1f) < 0f) {
 					trajectory = -1f * trajectory;
-				}
+				}*/
 			}
 			
 			frames = 0;
