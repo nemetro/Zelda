@@ -277,7 +277,7 @@ public class Zelda : MonoBehaviour {
 		if (other.gameObject.tag == "Enemy" && !invincible) {
 			//transform.Translate (trajectory * -2);
 			bounce = 2f;
-			health --;
+			health -= other.gameObject.GetComponent<Enemy>().damage;
 			invincible = true;
 			invincibleTimer = 2f;
 			if(health < 1){

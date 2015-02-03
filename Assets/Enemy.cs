@@ -1,13 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public enum EnemyTypes {Bat, Skelleton, Blob, Dragon};
+public enum EnemyTypes {Bat, Skelleton, Blob, Dragon, Fireball};
 public class Enemy : MonoBehaviour {
 	public EnemyTypes type;
+	public Transform fireballUp;
+	public Transform fireballCenter;
+	public Transform fireballDown;
 	public int health = 1;
 	public int damage = 1; // Amount of damage to deal
 	public Vector3 trajectory = Vector3.zero;
 	private int frames = 51; 
+	private int dragonFrames = 0;
+	private int dragonShots = 0;
 	public float pixel = .0625f;
 	public direction facing;
 	private RaycastHit hit;
@@ -21,12 +26,46 @@ public class Enemy : MonoBehaviour {
 			health = 2;
 		}
 		else if (type == EnemyTypes.Dragon) {
-			health = 2;
+			health = 12;
 		}
 	}
+
 	
 	void FixedUpdate () {
+		if(type == EnemyTypes.Fireball) return;
 		frames++;
+		if(type == EnemyTypes.Dragon) {
+			dragonFrames++;
+			transform.Translate(trajectory * 0.5f * pixel);
+			if(dragonFrames == 32) {
+				dragonFrames = 0;
+				dragonShots++;
+				if(dragonShots == 6) {
+					dragonShots = 0;
+					Instantiate(fireballUp, transform.position, Quaternion.identity);
+					Instantiate(fireballCenter, transform.position, Quaternion.identity);
+					Instantiate(fireballDown, transform.position, Quaternion.identity);
+				}
+				//70.75	74.75
+				if(transform.position.x <= 71) {
+					trajectory = new Vector3(1,0,0);
+				}
+				else if(transform.position.x >= 74.5) {
+					trajectory = new Vector3(-1,0,0);
+				}
+				else {
+					int coin = Random.Range(0, 2); // 0 or 1
+					if(coin == 0){
+						trajectory = new Vector3(-1, 0, 0);
+					}
+					else {
+						trajectory = new Vector3(1, 0, 0);
+					}
+				}
+			}
+			return;
+		}
+
 		if(frames > 20) {
 			// Pick a random direction
 			if(type == EnemyTypes.Bat) {

@@ -2,7 +2,10 @@ fileFormatVersion: 2
 guid: 761d477bc27304f2db976cf56cc1650c
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - fireballUp: {fileID: 479616, guid: 2489048a905434c14803ed6d6423bcae, type: 2}
+  - fireballCenter: {fileID: 445764, guid: 4ab173bc6f4e8499eae7bca09875e42b, type: 2}
+  - fireballDown: {fileID: 404746, guid: 651551ce71864416482551d7c43d031a, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
