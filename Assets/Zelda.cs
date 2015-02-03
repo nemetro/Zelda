@@ -11,7 +11,6 @@ public class Zelda : MonoBehaviour {
 	private int colliding = 0;
 	private direction facing;
 	public Transform swordup;
-	public Transform swordright;
 	public Transform bomb;
 	public Vector3 trans;
 	public static Zelda Z;
@@ -29,6 +28,8 @@ public class Zelda : MonoBehaviour {
 	public static int bombs = 2;
 	public static int keys = 0;
 	public static bool deity = false;
+	public static bool map = false;
+	public static bool compass = false;
 	
 
 	void snap() {
@@ -266,6 +267,12 @@ public class Zelda : MonoBehaviour {
 				break;
 			case "Bombs":
 				bombs += 4;
+				break;
+			case "Map":
+				map = true;
+				break;
+			case "Compass":
+				compass = true;
 				break;
 			default:
 				print ("Unknown Item");

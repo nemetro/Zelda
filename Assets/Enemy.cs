@@ -17,17 +17,51 @@ public class Enemy : MonoBehaviour {
 	public direction facing;
 	private RaycastHit hit;
 	private int layermask = 1 << 8;
+	public Material [] skins = new Material [4];
 
 	// Use this for initialization
 	void Start () {
+		Vector3 scale = new Vector3();
+		scale.z = 1f;
+		scale.x = 1f;
+		scale.y = 1f;
+
 		if(type == EnemyTypes.Skelleton) {
 			frames = 75;
 			trajectory = Vector3.left;
 			health = 2;
+			this.gameObject.renderer.material = skins[0];
+		}
+		else if(type == EnemyTypes.Bat){
+			scale.y = .5f;
+			this.gameObject.renderer.material = skins[1];
 		}
 		else if (type == EnemyTypes.Dragon) {
 			health = 12;
+			scale.x = 1.5f;
+			scale.y = 2f;
+			this.gameObject.renderer.material = skins[2];
+			BoxCollider box = this.gameObject.GetComponent<BoxCollider>();
+			Vector3 center, size;
+			center.x = 0.1667f;
+			center.y = -0.31f;
+			center.z = 0f;
+			size.x = 0.667f;
+			size.y = 0.38f;
+			size.z = 0f;
+			box.center = center;
+			box.size = size;
 		}
+		else if(type == EnemyTypes.Fireball){
+			scale.x = .5f;
+			scale.y = .5f;
+		}
+		else if(type == EnemyTypes.Blob){
+			scale.x = .5f;
+			scale.y = .5f;
+			this.gameObject.renderer.material = skins[3];
+		}
+		this.transform.localScale = scale;
 	}
 
 	
@@ -48,10 +82,10 @@ public class Enemy : MonoBehaviour {
 				}
 				//70.75	74.75
 				if(transform.position.x <= 71) {
-					trajectory = new Vector3(1,0,0);
+					trajectory.x *= -1;
 				}
 				else if(transform.position.x >= 74.5) {
-					trajectory = new Vector3(-1,0,0);
+					trajectory.x *= -1;
 				}
 				else {
 					int coin = Random.Range(0, 2); // 0 or 1
