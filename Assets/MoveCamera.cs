@@ -13,6 +13,7 @@ public enum direction {
 public class MoveCamera : MonoBehaviour {
 
 	static public MoveCamera S;
+	public string Level;
 	public Vector3 trans;
 	public Vector3 init;
 	public static int xcoord = 2, ycoord = 5;
