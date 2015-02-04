@@ -30,6 +30,8 @@ public class Enemy : MonoBehaviour {
 			frames = 75;
 			trajectory = Vector3.left;
 			health = 2;
+			scale.x = .99f;
+			scale.y = .99f;
 			this.gameObject.renderer.material = skins[0];
 		}
 		else if(type == EnemyTypes.Bat){
