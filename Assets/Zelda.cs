@@ -3,7 +3,6 @@ using System.Collections;
 
 public class Zelda : MonoBehaviour {
 	
-	private Vector3 trajectory;
 	private bool locked = false;
 	private bool hasSword = true;
 	public bool bombing = false;
@@ -23,8 +22,9 @@ public class Zelda : MonoBehaviour {
 	float invincibleTimer = 0;
 	// Width of a Zelda pixel (not a screen pixel) in meters
 	//for hud
+	public static Vector3 trajectory;
 	public static int health = 6;
-	public static int MAX_HEALTH = 8;
+	public static int MAX_HEALTH = 6;
 	public static int bombs = 2;
 	public static int keys = 1;
 	public static bool deity = false;
@@ -153,10 +153,10 @@ public class Zelda : MonoBehaviour {
 				Debug.DrawRay(orig, dir, Color.red, 5f);
 				if(!Physics.Raycast(new Ray(transform.position, -1 * trajectory), out hit, 0.5f + 5f*pixel, layermask)) {
 					transform.Translate (trajectory * -5f * pixel);
-					print ("Bounced");
+					//print ("Bounced");
 				}
 				else {
-					print ("Bounce failed");
+					//print ("Bounce failed");
 					transform.Translate (trajectory * -1 * (hit.distance - 1f));
 				}
 				return;

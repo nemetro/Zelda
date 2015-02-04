@@ -51,6 +51,7 @@ public class Enemy : MonoBehaviour {
 			size.z = 0f;
 			box.center = center;
 			box.size = size;
+			trajectory = new Vector3(-1, 0, 0);
 		}
 		else if(type == EnemyTypes.Fireball){
 			scale.x = .5f;
@@ -159,10 +160,12 @@ public class Enemy : MonoBehaviour {
 			print ("HIT");
 		}*/
 		if(other.gameObject.name == "door") {
+			if(type == EnemyTypes.Skelleton) return;
 			trajectory = -1 * trajectory;
 			transform.Translate (pixel * trajectory);
 		}
 		if (other.gameObject.tag == "Wall" || other.gameObject.tag == "Obstacle") {
+			if(type == EnemyTypes.Dragon || type == EnemyTypes.Skelleton) return;
 			//if(type == EnemyTypes.Bat) {
 				trajectory = -1 * trajectory;
 				transform.Translate (trajectory * 3 * pixel);
@@ -180,7 +183,7 @@ public class Enemy : MonoBehaviour {
 		}
 		if(health <= 0) {
 			Destroy(gameObject);
-			print ("Enemy destroyed");
+			//print ("Enemy destroyed");
 		}
 	}
 }

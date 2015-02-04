@@ -28,8 +28,8 @@ public class MoveSkelleton : MonoBehaviour {
 					print ("Bounced");
 				}
 				else {
+					bounce = 0;
 					print ("Bounce failed");
-					transform.Translate (trajectory * -1 * (hit.distance - 1f));
 				}
 				return;
 		}
