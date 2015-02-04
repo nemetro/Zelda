@@ -10,6 +10,7 @@ public class Zelda : MonoBehaviour {
 	private int colliding = 0;
 	private direction facing;
 	public Transform swordup;
+	public Transform obstacle;
 	public Transform bomb;
 	public Vector3 trans;
 	public static Zelda Z;
@@ -30,6 +31,7 @@ public class Zelda : MonoBehaviour {
 	public static bool deity = false;
 	public static bool map = false;
 	public static bool compass = false;
+	public static bool obst = false;
 	
 
 	void snap() {
@@ -135,6 +137,16 @@ public class Zelda : MonoBehaviour {
 				if(!deity)
 					bombs--;
 				bombing = true;
+			}
+		}
+		if (Input.GetKeyDown (KeyCode.C)) {
+			if(obst){
+				if(facing == direction.north || facing == direction.south)
+					Instantiate(obstacle, transform.position + trajectory * 16 * pixel, Quaternion.Euler(0, 0, 180));
+				else
+					Instantiate(obstacle, transform.position + trajectory * -16 * pixel, Quaternion.Euler(0, 0, 180));
+
+				transform.position = new Vector3(Mathf.Round(transform.position.x * 2) / 2, Mathf.Round(transform.position.y * 2) / 2,  transform.position.z);
 			}
 		}
 	}
@@ -271,6 +283,9 @@ public class Zelda : MonoBehaviour {
 				break;
 			case "Compass":
 				compass = true;
+				break;
+			case "Obstacles":
+				obst = true;
 				break;
 			default:
 				print ("Unknown Item");
