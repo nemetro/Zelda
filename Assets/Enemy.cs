@@ -3,6 +3,7 @@ using System.Collections;
 
 public enum EnemyTypes {Bat, Skelleton, Blob, Dragon, Fireball, Goriya};
 public class Enemy : MonoBehaviour {
+	public static GameObject E;
 	public EnemyTypes type;
 	public int xcoord, ycoord;
 	private Vector3 startPos;
@@ -25,10 +26,14 @@ public class Enemy : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		E = this.gameObject;
 		Vector3 scale = new Vector3();
 		scale.z = 1f;
 		scale.x = 1f;
 		scale.y = 1f;
+		var sGoriya = this.gameObject.GetComponent("MoveGoriya");
+		var sSkelleton = this.gameObject.GetComponent("MoveSkelleton");
+		var sBlob = this.gameObject.GetComponent("MoveBlob");
 
 		if(type == EnemyTypes.Skelleton) {
 			frames = 75;
@@ -37,10 +42,18 @@ public class Enemy : MonoBehaviour {
 			scale.x = .99f;
 			scale.y = .99f;
 			this.gameObject.renderer.material = skins[0];
+
+			Destroy(sGoriya);
+			Destroy(sBlob);
 		}
 		else if(type == EnemyTypes.Bat){
+			health = 1;
 			scale.y = .5f;
 			this.gameObject.renderer.material = skins[1];
+
+			Destroy(sGoriya);
+			Destroy(sBlob);
+			Destroy(sSkelleton);
 		}
 		else if (type == EnemyTypes.Dragon) {
 			health = 12;
@@ -58,15 +71,28 @@ public class Enemy : MonoBehaviour {
 			box.center = center;
 			box.size = size;
 			trajectory = new Vector3(-1, 0, 0);
+
+			Destroy(sGoriya);
+			Destroy(sBlob);
+			Destroy(sSkelleton);
 		}
 		else if(type == EnemyTypes.Fireball){
+			health = 10;
 			scale.x = .5f;
 			scale.y = .5f;
+
+			Destroy(sGoriya);
+			Destroy(sBlob);
+			Destroy(sSkelleton);
 		}
 		else if(type == EnemyTypes.Blob){
+			health = 1;
 			scale.x = .5f;
 			scale.y = .5f;
 			this.gameObject.renderer.material = skins[3];
+
+			Destroy(sGoriya);
+			Destroy(sSkelleton);
 		}
 		this.transform.localScale = scale;
 		startPos = transform.position;

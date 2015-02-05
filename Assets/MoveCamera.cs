@@ -28,7 +28,7 @@ public class MoveCamera : MonoBehaviour {
 		}
 		else{
 			xcoord = 1;
-			ycoord = 0;
+			ycoord = 3;
 		}
 	}
 
