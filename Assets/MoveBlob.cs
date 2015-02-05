@@ -23,7 +23,60 @@ public class MoveBlob : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
+		if(MoveCamera.xcoord != GetComponent<Enemy>().xcoord || MoveCamera.ycoord != GetComponent<Enemy>().ycoord) {
+			return;
+		}
+		if(pauseFrames >= 0) {
+			frames++;
+			pauseFrames--;
+		}
+		else if(frames < 32) {
+			transform.Translate(trajectory / 32f);
+		}
+		else if(frames == 32) {
+			snap ();
+		}
+		else if(frames < 40) {
+			// Rest
+		}
+		else if (frames >= 40){
+			// Change direction
+			RaycastHit hitt;
+			bool hitObstacle = true;
+			int die = Random.Range(0, 10);
+			if(die < 4) {
+				/* Trajectory stays the same */
+			}
+			else if(die < 6) {
+				pauseFrames = 32;
+			}
+			else if(die < 7) {
+				trajectory = new Vector3(trajectory.y, trajectory.x, trajectory.z);
+			}
+			else if(die < 8) {
+				trajectory = new Vector3(-1 * trajectory.y, trajectory.x, trajectory.z);
+			}
+			else {
+				trajectory = new Vector3(trajectory.y, -1 * trajectory.x, trajectory.z);
+			}
 
+			Vector3 origin = transform.position;
+			Debug.DrawRay(origin, -1 * trajectory, Color.red, 5f);
+			if(Physics.Raycast(new Ray(origin, -1 * trajectory), out hitt)) {
+				if(hitt.collider.gameObject.name == "door" || hitt.collider.gameObject.name == "Moveable") {
+					frames++;
+					return;
+				}
+			}
+			if(Physics.Raycast(new Ray(origin, -1 * trajectory), out hitt, 1f, 1 << 8)) {
+				print ("Bad direction");
+			} else frames = 0;
+			//print("New trajectory: " + trajectory);
+		}
+		frames++;
+		/*
+
+		frames++;
 		if(frames >= 32) {
 			snap ();
 			if(frames < 40) {
@@ -32,10 +85,9 @@ public class MoveBlob : MonoBehaviour {
 				return;
 			}
 			else {
-				frames = 0;
 				int die = Random.Range(0, 10);
 				if(die < 4) {
-					/* Trajectory stays the same */
+					//Trajectory stays the same
 				}
 				else if(die < 6) {
 					pauseFrames = 32;
@@ -52,16 +104,13 @@ public class MoveBlob : MonoBehaviour {
 			}
 		}
 
-		if(pauseFrames >= 0) {
-			frames++;
-			pauseFrames--;
-			return;
-		}
+
 
 		RaycastHit hitt;
-		if(frames % 32 == 0){
+		if(frames == 40){
+			frames = 0;
 			Vector3 origin = transform.position;
-			Vector3 dirr = trajectory;
+			Vector3 dirr = -1 * trajectory;
 			Debug.DrawRay(origin, dirr, Color.red, 5f);
 			if(Physics.Raycast(new Ray(origin, dirr), out hitt, 1f, 1 << 8)) {
 				if(hitt.collider.gameObject.tag == "Obstacle") {
@@ -80,7 +129,7 @@ public class MoveBlob : MonoBehaviour {
 		else {
 			transform.Translate(trajectory / 32f);
 		}
-		frames++;
+		frames++;*/
 	}
 	
 	void OnTriggerStay(Collider other) {

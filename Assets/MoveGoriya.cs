@@ -23,6 +23,9 @@ public class MoveGoriya : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
+		if(MoveCamera.xcoord != GetComponent<Enemy>().xcoord || MoveCamera.ycoord != GetComponent<Enemy>().ycoord) {
+			return;
+		}
 		if(bounce > 0) {
 			bounce -= 5f/16f;
 			Vector3 orig = transform.position;
