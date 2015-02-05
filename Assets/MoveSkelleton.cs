@@ -25,11 +25,11 @@ public class MoveSkelleton : MonoBehaviour {
 				Debug.DrawRay(orig, dir, Color.red, 5f);
 				if(!Physics.Raycast(new Ray(transform.position, -1 * trajectory), out hit, 0.5f + 5f/16f, 1 << 8)) {
 					transform.Translate (trajectory * -5f/16f);
-					print ("Bounced");
+					//print ("Bounced");
 				}
 				else {
 					bounce = 0;
-					print ("Bounce failed");
+					//print ("Bounce failed");
 				}
 				return;
 		}
@@ -65,7 +65,7 @@ public class MoveSkelleton : MonoBehaviour {
 		if(other.gameObject.tag == "Sword") {
 			bounce = 4f;
 			GameObject Link = GameObject.Find("Link");
-			trajectory = Link.transform.position - transform.position;
+			trajectory = Link.transform.position + transform.position;
 			trajectory.z = 0;
 			if(Mathf.Abs(trajectory.x) > Mathf.Abs(trajectory.y)) {
 				trajectory.y = 0;

@@ -75,7 +75,7 @@ public class Doors : MonoBehaviour {
 			}
 			break;
 		default:
-			print ("Broke");
+			//print ("Broke");
 			break;
 		}
 	}

@@ -12,13 +12,13 @@ public class moveBoomerang : MonoBehaviour {
 	void Start () {
 		if(trajectory.y == 0) trajectory *= -1;
 		if(Zelda.health >= Zelda.MAX_HEALTH) move = true;
-		print(trajectory);
+		//print(trajectory);
 	}
 	
 	void FixedUpdate () {
-		print (trajectory);
+		//print (trajectory);
 		if(move) {
-			//print (trajectory);
+			////print (trajectory);
 			transform.position += trajectory / 8f;
 			//transform.Translate (trajectory / 8f); // Two pixels per frame
 			return;
