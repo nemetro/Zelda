@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public enum EnemyTypes {Bat, Skelleton, Blob, Dragon, Fireball};
+public enum EnemyTypes {Bat, Skelleton, Blob, Dragon, Fireball, Goriya};
 public class Enemy : MonoBehaviour {
 	public EnemyTypes type;
 	public Transform fireballUp;

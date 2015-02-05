@@ -32,7 +32,7 @@ public class Zelda : MonoBehaviour {
 	public static bool map = false;
 	public static bool compass = false;
 	public static bool obst = false;
-	
+	public Material [] skins = new Material [4];
 
 	void snap() {
 		//Vector3 target = new Vector3(Mathf.Round(transform.position.x * 2) / 2, Mathf.Round(transform.position.y * 2) / 2, 0.5f);
@@ -90,18 +90,22 @@ public class Zelda : MonoBehaviour {
 			}
 		}
 		if(Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown (KeyCode.W)){
+			this.gameObject.renderer.material = skins[0];
 			facing = direction.north;
 			if(invincibleTimer <= 0)
 				invincible = deity;
 		}else if(Input.GetKeyDown (KeyCode.RightArrow) || Input.GetKeyDown (KeyCode.D)){
+			this.gameObject.renderer.material = skins[1];
 			facing = direction.east;
 			if(invincibleTimer <= 0)
 				invincible = deity;
 		}else if(Input.GetKeyDown (KeyCode.DownArrow) || Input.GetKeyDown (KeyCode.S)){
+			this.gameObject.renderer.material = skins[2];
 			facing = direction.south;
 			if(invincibleTimer <= 0)
 				invincible = deity;
 		}else if(Input.GetKeyDown (KeyCode.LeftArrow) || Input.GetKeyDown (KeyCode.A)){
+			this.gameObject.renderer.material = skins[3];
 			facing = direction.west;
 			if(invincibleTimer <= 0)
 				invincible = deity;
