@@ -141,6 +141,7 @@ public class Zelda : MonoBehaviour {
 		}
 		if (Input.GetKeyDown (KeyCode.C)) {
 			if(obst){
+				snap ();
 				if(facing == direction.north || facing == direction.south)
 					Instantiate(obstacle, transform.position + trajectory * 16 * pixel, Quaternion.Euler(0, 0, 180));
 				else
