@@ -6,6 +6,7 @@ public class Zelda : MonoBehaviour {
 	private bool locked = false;
 	private bool hasSword = true;
 	public bool bombing = false;
+	public bool shooting = false;
 	private int swinging;
 	private int colliding = 0;
 	private direction facing;
@@ -14,7 +15,7 @@ public class Zelda : MonoBehaviour {
 	public Transform bomb;
 	public Vector3 trans;
 	public static Zelda Z;
-	private float bounce = 0;
+	public float bounce = 0;
 	private int pixelsMoved = 0;
 	private float pixel = 0.0625f;
 	private RaycastHit hit;
@@ -40,11 +41,11 @@ public class Zelda : MonoBehaviour {
 		//int layermask = 1 << 8;
 		/*if(Physics.Raycast(target - 0.5f*Vector3.up - 0.5f*Vector3.left, (Vector3.up + Vector3.left), out hit, Mathf.Sqrt (2f), layermask)) {
 			Debug.DrawRay(target - 0.5f*Vector3.up - 0.5f*Vector3.left, Mathf.Sqrt(2)/2f * (Vector3.up + Vector3.left), Color.red, 1f);
-			print ("Ray hit " + hit.collider.tag + ", " + hit.collider.name + ", " + hit.collider.gameObject.layer);
-			//print ("Ray 1 hit");
+			//print ("Ray hit " + hit.collider.tag + ", " + hit.collider.name + ", " + hit.collider.gameObject.layer);
+			////print ("Ray 1 hit");
 		}*/
 		/*if(Physics.Raycast(target - 0.5f*Vector3.up - 0.5f*Vector3.right, Vector3.up + Vector3.right, Mathf.Sqrt(2))) {
-			print ("Ray 2 hit");
+			//print ("Ray 2 hit");
 		}*/
 		transform.position = new Vector3(Mathf.Round(transform.position.x * 2) / 2, Mathf.Round(transform.position.y * 2) / 2,  transform.position.z);
 		/*if(trajectory == Vector3.right || trajectory == Vector3.left) {
@@ -52,7 +53,7 @@ public class Zelda : MonoBehaviour {
 			while(pixel >= 175f) pixel -= 175f;
 			float offset = pixel / 16f; // meters from topmost pixel of topmost floor tile of room
 			float move = Mathf.Round(offset * 2f) / 2f - offset; // number of meters to move to snap vertically
-			print (pixel + ", " + offset + ", " + move);
+			//print (pixel + ", " + offset + ", " + move);
 			transform.position = new Vector3(transform.position.x, transform.position.y + move, transform.position.z);
 		}
 		else {
@@ -60,7 +61,7 @@ public class Zelda : MonoBehaviour {
 			while(pixel < 248f) pixel += 248f;
 			float offset = pixel / 16f; // meters from leftmost pixel of leftmost floor tile of room
 			float move = Mathf.Round(offset * 2f) / 2f - offset; // number of meters to move to snap horizontally
-			print (pixel + ", " + offset + ", " + move);
+			//print (pixel + ", " + offset + ", " + move);
 			transform.position = new Vector3(transform.position.x + move, transform.position.y, transform.position.z);
 		}*/
 	}
@@ -159,7 +160,7 @@ public class Zelda : MonoBehaviour {
 	void FixedUpdate () {
 		if(bounce > 0) {
 			if(locked) {
-				print ("Locked");
+				//print ("Locked");
 				bounce = 0;
 				return;
 			}
@@ -170,10 +171,10 @@ public class Zelda : MonoBehaviour {
 				Debug.DrawRay(orig, dir, Color.red, 5f);
 				if(!Physics.Raycast(new Ray(transform.position, -1 * trajectory), out hit, 0.5f + 5f*pixel, layermask)) {
 					transform.Translate (trajectory * -5f * pixel);
-					//print ("Bounced");
+					////print ("Bounced");
 				}
 				else {
-					//print ("Bounce failed");
+					////print ("Bounce failed");
 					transform.Translate (trajectory * -1 * (hit.distance - 1f));
 				}
 				return;
@@ -243,7 +244,7 @@ public class Zelda : MonoBehaviour {
 	void OnTriggerExit(Collider other) {
 		if (other.gameObject.layer == 8) {
 			colliding--;
-			//print ("Unlocked");
+			////print ("Unlocked");
 			if (colliding == 0) locked = false;
 		}
 	}
@@ -253,7 +254,7 @@ public class Zelda : MonoBehaviour {
 		}
 
 		if(other.gameObject.tag == "Moveable"){
-			print ("MOVEABLE");
+			//print ("MOVEABLE");
 			//transform.Translate (trajectory *-1* pixel);
 			other.gameObject.tag = "Obstacle";
 			if (trajectory == Vector3.up || trajectory == Vector3.down)
@@ -264,18 +265,28 @@ public class Zelda : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
-		//print(colliding);
+		////print(colliding);
 		if(other.gameObject.layer == 8) {
 			locked = true;
 			colliding++;
 		}
+		if (other.gameObject.name == "Locked"){
+			print ("LOCKED");
+			if(keys > 0){
+				keys--;
+				colliding--;
+				locked = false;
+			}
+		}
 		if(other.gameObject.tag == "Item")
 		{
-			print ("ITEM");
+			//print ("ITEM");
 			switch(other.gameObject.name){
 			case "Heart":
-				if(health < MAX_HEALTH)
+				if(health+2 <= MAX_HEALTH)
 					health += 2;
+				else if (health+1 <= MAX_HEALTH)
+					health++;
 				break;
 			case "Key":
 				keys++;
@@ -292,8 +303,11 @@ public class Zelda : MonoBehaviour {
 			case "Obstacles":
 				obst = true;
 				break;
+			case "Triforce":
+				Application.LoadLevel("_Intro");
+				break;
 			default:
-				print ("Unknown Item");
+				//print ("Unknown Item");
 				break;
 			}
 			Destroy(other.gameObject);
@@ -310,22 +324,15 @@ public class Zelda : MonoBehaviour {
 				health = MAX_HEALTH;
 			}
 		}
-		if (other.gameObject.name == "Locked"){
-			if(keys > 0){
-				keys--;
-				colliding--;
-				locked = false;
-			}
-		}
 	}
 
 	public void MoveLink(direction dir, float dist){
-		print (dir);
+		//print (dir);
 		Vector3 dest = transform.position;
 		invincible = true;
 
 		if(dist != 0){
-			print ("Move by " + dist);
+			//print ("Move by " + dist);
 			switch (dir){
 			case direction.north:
 				dest.y += dist;
@@ -346,7 +353,7 @@ public class Zelda : MonoBehaviour {
 				dest.z += dist;
 				break;
 			default:
-				print ("Broke");
+				//print ("Broke");
 				break;
 			}
 		}
@@ -373,7 +380,7 @@ public class Zelda : MonoBehaviour {
 				dest.y -= 8;
 				break;
 			default:
-				print ("Broke");
+				//print ("Broke");
 				break;
 			}
 		}

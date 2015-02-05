@@ -4,6 +4,8 @@ using System.Collections;
 public enum EnemyTypes {Bat, Skelleton, Blob, Dragon, Fireball, Goriya};
 public class Enemy : MonoBehaviour {
 	public EnemyTypes type;
+	public int xcoord, ycoord;
+	private Vector3 startPos;
 	public Transform fireballUp;
 	public Transform fireballCenter;
 	public Transform fireballDown;
@@ -18,6 +20,8 @@ public class Enemy : MonoBehaviour {
 	private RaycastHit hit;
 	private int layermask = 1 << 8;
 	public Material [] skins = new Material [4];
+	public bool haskey;
+	public GameObject [] items = new GameObject [3];
 
 	// Use this for initialization
 	void Start () {
@@ -65,8 +69,13 @@ public class Enemy : MonoBehaviour {
 			this.gameObject.renderer.material = skins[3];
 		}
 		this.transform.localScale = scale;
+		startPos = transform.position;
 	}
 
+	void Update(){
+		if(MoveCamera.xcoord != xcoord || MoveCamera.ycoord != ycoord)
+			transform.position = startPos;
+	}
 	
 	void FixedUpdate () {
 		if(type == EnemyTypes.Fireball) return;
@@ -140,10 +149,10 @@ public class Enemy : MonoBehaviour {
 		Debug.DrawRay(origin, dir, Color.cyan);
 		if(!Physics.Raycast(new Ray(origin, dir), out hit, 0.5f + pixel, layermask)) {
 			transform.Translate (trajectory * pixel);
-			//print ("Hit nothing");
+			////print ("Hit nothing");
 		}
 		else {
-			//print ("Hit a thing");
+			////print ("Hit a thing");
 		}
 
 
@@ -158,8 +167,8 @@ public class Enemy : MonoBehaviour {
 
 		/*if(other.gameObject.tag == "Link"){
 			Zelda.health -= damage;
-			print (Zelda.health);
-			print ("HIT");
+			//print (Zelda.health);
+			//print ("HIT");
 		}*/
 		if(other.gameObject.name == "door") {
 			if(type == EnemyTypes.Skelleton) return;
@@ -185,7 +194,12 @@ public class Enemy : MonoBehaviour {
 		}
 		if(health <= 0) {
 			Destroy(gameObject);
-			//print ("Enemy destroyed");
+			var number = Random.Range(0,12);
+			if(number < 2)
+				Instantiate(items[number], transform.position, Quaternion.Euler(0, 0, 180));
+			if(haskey)
+				Instantiate(items[2], transform.position, Quaternion.Euler(0, 0, 180));
+			////print ("Enemy destroyed");
 		}
 	}
 }

@@ -30,19 +30,19 @@ public class MoveGoriya : MonoBehaviour {
 			Debug.DrawRay(orig, dir, Color.red, 5f);
 			if(!Physics.Raycast(new Ray(transform.position, -1 * trajectory), out hit, 0.5f + 5f/16f, 1 << 8)) {
 				transform.Translate (trajectory * -5f/16f);
-				print ("Bounced");
+				//print ("Bounced");
 			}
 			else {
 				bounce = 0;
-				print ("Bounce failed");
+				//print ("Bounce failed");
 			}
 			return;
 		}
 		if(frames == 15) {
-			print ("Fifteen");
+			//print ("Fifteen");
 			int die = Random.Range(0, 7);
 			if(die == 0) {
-				print ("die");
+				//print ("die");
 				waiting = true;
 				newBoomerang = Instantiate(boomerang, transform.position, Quaternion.identity) as GameObject;
 				newBoomerang.GetComponent<moveBoomerang>().trajectory = trajectory;
@@ -78,15 +78,15 @@ public class MoveGoriya : MonoBehaviour {
 			Debug.DrawRay(origin, dirr, Color.red, 5f);
 			if(Physics.Raycast(new Ray(origin, dirr), out hitt, 1f, 1 << 8)) {
 				if(hitt.collider.gameObject.tag == "Obstacle") {
-					//print ("Raycast hit obstacle");
+					////print ("Raycast hit obstacle");
 					frames = 32 * squaresToMove;
 				}
 				else {
-					//print ("No raycast hit");
+					////print ("No raycast hit");
 					transform.Translate(trajectory / 32f);
 				}
 			} else {
-				//print ("No raycast hit");
+				////print ("No raycast hit");
 				transform.Translate(trajectory / 32f);
 			}
 		}
@@ -110,10 +110,10 @@ public class MoveGoriya : MonoBehaviour {
 		if(other.gameObject == newBoomerang) {
 			if(other.gameObject.GetComponent<moveBoomerang>().outgoing == false) {
 				waiting = false;
-				print ("Destroying boomerang");
+				//print ("Destroying boomerang");
 				Destroy(other.gameObject);
 			}
-			else print ("Keeping boomerang");
+			//else //print ("Keeping boomerang");
 		}
 	}
 	void OnTriggerEnter(Collider other) {
@@ -140,10 +140,10 @@ public class MoveGoriya : MonoBehaviour {
 
 			if(other.gameObject.GetComponent<moveBoomerang>().outgoing == false) {
 				waiting = false;
-				print ("Destroying boomerang");
+				//print ("Destroying boomerang");
 				Destroy(other.gameObject);
 			}
-			else print ("Keeping boomerang");
+			else //print ("Keeping boomerang");
 			snap ();
 			bounce = 0;
 			transform.Translate (trajectory / 32f);

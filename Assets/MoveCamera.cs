@@ -16,12 +16,20 @@ public class MoveCamera : MonoBehaviour {
 	public string Level;
 	public Vector3 trans;
 	public Vector3 init;
-	public static int xcoord = 2, ycoord = 5;
+	public static int xcoord, ycoord;
 	public float easing = 0.05f;
 	
-	void Awake(){
+	void Start(){
 		S = this;
 		this.transform.position = init;
+		if(Level == "1"){
+			xcoord = 2;
+			ycoord = 5;
+		}
+		else{
+			xcoord = 1;
+			ycoord = 0;
+		}
 	}
 
 	public void nextRoom (direction dir) {
@@ -51,7 +59,7 @@ public class MoveCamera : MonoBehaviour {
 			dest.y -= trans.y;
 			break;
 		default:
-			print ("Broke");
+			//print ("Broke");
 			break;
 		}
 		transform.position = dest;

@@ -20,7 +20,7 @@ public class fireball : MonoBehaviour {
 			angle -= 15f;
 		}
 		trajectory = new Vector3(Mathf.Cos (angle * Mathf.Deg2Rad), Mathf.Sin (angle * Mathf.Deg2Rad), 0); // Unit vector in direction of 
-		//print (dir + ", " + angle + ", " + trajectory);
+		////print (dir + ", " + angle + ", " + trajectory);
 	}
 	
 	void FixedUpdate () {
