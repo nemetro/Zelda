@@ -114,6 +114,8 @@ public class Zelda : MonoBehaviour {
 
 		if (Input.GetKeyDown (KeyCode.X) || Input.GetKeyDown (KeyCode.Period)) {
 			if(hasSword) {
+				GameObject[] swords = GameObject.FindGameObjectsWithTag("Sword");
+				if(swords.Length > 0) return;
 				switch(facing){
 				case direction.north:
 					Instantiate(swordup, transform.position + trajectory * 12 * pixel, Quaternion.Euler(0, 0, 180));
