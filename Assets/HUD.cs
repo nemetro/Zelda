@@ -4,31 +4,39 @@ using System.Collections;
 
 public class HUD : MonoBehaviour {
 
-	Text health;
-	Text healthT;
-	Text keys;
-	Text bombs;
-	Text level;
-	Image map;
-	Text xy;
-	Text compass;
-	Text deity;
-	Image C;
+	private Text health;
+	private Text healthT;
+	private Text keys;
+	private Text bombs;
+//	private Text level;
+	private Image map;
+	private Text xy;
+	private Text compass;
+	private Text deity;
+	private Image C;
 
 	void Start () {
 		health = transform.Find("Life").gameObject.GetComponent<Text>(); 
 		health.text= "";
+
 		healthT = transform.Find("LifeTotal").gameObject.GetComponent<Text>(); 
 		healthT.text= "";
+
 		keys = transform.Find("Keys").gameObject.GetComponent<Text>(); 
 		keys.text= Zelda.keys.ToString();
+
 		bombs = transform.Find("Bombs").gameObject.GetComponent<Text>(); 
 		bombs.text= Zelda.bombs.ToString();
+
 		xy = transform.Find("Coords").gameObject.GetComponent<Text>();
-		level = transform.Find("Level").gameObject.GetComponent<Text>();
-		level.text = MoveCamera.S.Level;
+
+//		level = transform.Find("Level").gameObject.GetComponent<Text>();
+//		level.text = MoveCamera.S.Level;
+
 		map = transform.Find("Map").gameObject.GetComponent<Image>();
 		C = transform.Find("C").gameObject.GetComponent<Image>();
+		if(C == null)
+			print ("What the heck");
 		deity = transform.Find("Deity").gameObject.GetComponent<Text>(); 
 	}
 	
