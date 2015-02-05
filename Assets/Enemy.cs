@@ -20,7 +20,7 @@ public class Enemy : MonoBehaviour {
 	public direction facing;
 	private RaycastHit hit;
 	private int layermask = 1 << 8;
-	public Material [] skins = new Material [4];
+	public Material [] skins = new Material [5];
 	public bool haskey;
 	public GameObject [] items = new GameObject [3];
 
@@ -92,6 +92,15 @@ public class Enemy : MonoBehaviour {
 			this.gameObject.renderer.material = skins[3];
 
 			Destroy(sGoriya);
+			Destroy(sSkelleton);
+		}
+		else if(type == EnemyTypes.Goriya){
+			health = 2;
+			scale.x = .8125f;
+			scale.y = 1f;
+			this.gameObject.renderer.material = skins[4];
+			
+			Destroy(sBlob);
 			Destroy(sSkelleton);
 		}
 		this.transform.localScale = scale;
