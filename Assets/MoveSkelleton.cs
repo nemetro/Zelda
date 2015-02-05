@@ -21,7 +21,8 @@ public class MoveSkelleton : MonoBehaviour {
 		if(bounce > 0) {
 				bounce -= 5f/16f;
 				Vector3 orig = transform.position;
-				Vector3 dir = -1*(5f/16f + 0.5f)*trajectory;
+				//Vector3 dir = -1*(5f/16f + 0.5f)*trajectory;
+				Vector3 dir = (5f/16f + 0.5f)*trajectory;
 				Debug.DrawRay(orig, dir, Color.red, 5f);
 				if(!Physics.Raycast(new Ray(transform.position, -1 * trajectory), out hit, 0.5f + 5f/16f, 1 << 8)) {
 					transform.Translate (trajectory * -5f/16f);
@@ -33,7 +34,7 @@ public class MoveSkelleton : MonoBehaviour {
 				}
 				return;
 		}
-		if(frames >= 16 * squaresToMove) {
+		else if(frames >= 16 * squaresToMove) {
 			frames = 0;
 			snap ();
 			squaresToMove = Random.Range (1, 7);
@@ -63,9 +64,10 @@ public class MoveSkelleton : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other) {
 		if(other.gameObject.tag == "Sword") {
+			trajectory = other.GetComponent<Sword>().trajectory;
 			bounce = 4f;
 			GameObject Link = GameObject.Find("Link");
-			trajectory = Link.transform.position + transform.position;
+			/*trajectory = Link.transform.position + transform.position;
 			trajectory.z = 0;
 			if(Mathf.Abs(trajectory.x) > Mathf.Abs(trajectory.y)) {
 				trajectory.y = 0;
@@ -73,7 +75,7 @@ public class MoveSkelleton : MonoBehaviour {
 			else {
 				trajectory.x = 0;
 			}
-			trajectory.Normalize();
+			trajectory.Normalize();*/
 		}
 		if(other.gameObject.layer == 8 || other.gameObject.name == "door") {
 			snap ();

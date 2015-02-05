@@ -5,7 +5,7 @@ using System.Timers;
 public class Sword : MonoBehaviour {
 
 	public static int framesToDelay = 10;
-	private Vector3 trajectory;
+	public Vector3 trajectory;
 	private int updates = 0;
 	private bool move = false;
 	// Use this for initialization
