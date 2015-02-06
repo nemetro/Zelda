@@ -13,7 +13,7 @@ public class Enemy : MonoBehaviour {
 	public int health = 1;
 	public int damage = 1; // Amount of damage to deal
 	public Vector3 trajectory = Vector3.zero;
-	private int frames = 51; 
+	private float frames = 51f; 
 	private int dragonFrames = 0;
 	private int dragonShots = 0;
 	public float pixel = .0625f;
@@ -23,7 +23,7 @@ public class Enemy : MonoBehaviour {
 	public Material [] skins = new Material [5];
 	public bool haskey;
 	public GameObject [] items = new GameObject [3];
-
+	private int moves = 3;
 	// Use this for initialization
 	void Start () {
 		E = this.gameObject;
@@ -31,12 +31,13 @@ public class Enemy : MonoBehaviour {
 		scale.z = 1f;
 		scale.x = 1f;
 		scale.y = 1f;
+		moves = Random.Range(0, 12);
 		var sGoriya = this.gameObject.GetComponent("MoveGoriya");
 		var sSkelleton = this.gameObject.GetComponent("MoveSkelleton");
 		var sBlob = this.gameObject.GetComponent("MoveBlob");
 
 		if(type == EnemyTypes.Skelleton) {
-			frames = 75;
+			frames = 75f;
 			trajectory = Vector3.left;
 			health = 2;
 			scale.x = .99f;
@@ -96,7 +97,7 @@ public class Enemy : MonoBehaviour {
 		}
 		else if(type == EnemyTypes.Goriya){
 			health = 2;
-			scale.x = .8125f;
+			//scale.x = .8125f;
 			scale.y = 1f;
 			this.gameObject.renderer.material = skins[4];
 			
@@ -106,13 +107,15 @@ public class Enemy : MonoBehaviour {
 		this.transform.localScale = scale;
 		startPos = transform.position;
 	}
-
+	
 	void Update(){
 		if(MoveCamera.xcoord != xcoord || MoveCamera.ycoord != ycoord)
 			transform.position = startPos;
 	}
 	
 	void FixedUpdate () {
+		if(MoveCamera.xcoord != xcoord || MoveCamera.ycoord != ycoord) return;
+
 		if(type == EnemyTypes.Fireball) return;
 		frames++;
 		if(type == EnemyTypes.Dragon) {
@@ -147,35 +150,37 @@ public class Enemy : MonoBehaviour {
 			return;
 		}
 
-		if(frames > 20) {
-			// Pick a random direction
-			if(type == EnemyTypes.Bat) {
+		else if(type == EnemyTypes.Bat) {
+			/**/
+
+			if(frames > 20) { // New direction
+				moves++;
 				trajectory =  new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0f);
 				trajectory.Normalize ();
+				frames = 0;
 			}
-			else if(type == EnemyTypes.Skelleton) {
-				return;
-				/*if(trajectory == Vector3.left || trajectory == Vector3.right) {
-					trajectory = Vector3.up;
-				}
-				else if(trajectory == Vector3.up || trajectory == Vector3.down || trajectory == Vector3.forward || trajectory == Vector3.back) {
-					trajectory = Vector3.right;
-				}
-				
-				if(Random.Range(-1f, 1f) < 0f) {
-					trajectory = -1f * trajectory;
-				}*/
-			}
-			
-			frames = 0;
-		}
-		else {
-			if(type == EnemyTypes.Bat) {
-				transform.Translate (trajectory*pixel);
-				return;
-			}
-		}
 
+			if(moves == 12) {
+				trajectory /= (frames / 40f + 1);
+				//print("Trajectory decremented to " + trajectory);
+			}
+			else if(moves > 14 && moves <= 15) {
+				trajectory = Vector3.zero;
+			}
+			else if(moves > 15 && moves < 18)  {
+				trajectory = trajectory * frames / 40f;
+				//print("Trajectory incremented to " + trajectory);
+			}
+			else if (moves == 19) {
+				moves = Random.Range (0, 5);
+			}
+
+			transform.Translate (trajectory*pixel);
+
+			return;
+
+		}
+		
 		Vector3 origin = transform.position;
 		Vector3 dir = trajectory;
 		if(trajectory == Vector3.left || trajectory == Vector3.right) {
@@ -189,17 +194,17 @@ public class Enemy : MonoBehaviour {
 		else {
 			////print ("Hit a thing");
 		}
-
-
-
+		
+		
+		
 	}
-
+	
 	void OnTriggerStay(Collider other) {
-
+		
 	}
-
+	
 	void OnTriggerEnter(Collider other) {
-
+		
 		/*if(other.gameObject.tag == "Link"){
 			Zelda.health -= damage;
 			//print (Zelda.health);
@@ -213,8 +218,8 @@ public class Enemy : MonoBehaviour {
 		if (other.gameObject.tag == "Wall" || other.gameObject.tag == "Obstacle") {
 			if(type == EnemyTypes.Dragon || type == EnemyTypes.Skelleton) return;
 			//if(type == EnemyTypes.Bat) {
-				trajectory = -1 * trajectory;
-				transform.Translate (trajectory * 3 * pixel);
+			trajectory = -1 * trajectory;
+			transform.Translate (trajectory * 3 * pixel);
 			//}
 		}
 		
