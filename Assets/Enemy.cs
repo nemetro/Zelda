@@ -81,7 +81,8 @@ public class Enemy : MonoBehaviour {
 			health = 10;
 			scale.x = .5f;
 			scale.y = .5f;
-
+			xcoord = 4;
+			ycoord = 1;
 			Destroy(sGoriya);
 			Destroy(sBlob);
 			Destroy(sSkelleton);
@@ -233,7 +234,7 @@ public class Enemy : MonoBehaviour {
 			health -= 1;
 		}
 		else if (other.gameObject.tag == "Boomerang") {
-			health -= 1;
+			//health -= 1;
 		}
 		else if (other.gameObject.tag == "Bomb") {
 			health -= 4;

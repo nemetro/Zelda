@@ -4,15 +4,18 @@ using System.Collections;
 public class nemesis : MonoBehaviour {
 
 	public Vector3 trajectory;
+	public bool haskey;
 	private float frames = 0;
 	private float pixelsPerFrame = 1f;
 	private float squaresPerDirection = 4f;
 	private float pixelsPerSquare = 16f;
 	private float framesPerDirection = 0f;
-	private int movesBetweenPauses = 4;
+	private int movesBetweenPauses = 0; // Zero for no pauses
+	public int health = 2;
 	private bool pause;
 	private int layermask = 1 << 8;
 	private RaycastHit hit;
+	public GameObject [] items = new GameObject [3];
 
 	void snap() {
 		transform.position = new Vector3(Mathf.Round(transform.position.x), Mathf.Round(transform.position.y),  transform.position.z);
@@ -70,5 +73,32 @@ public class nemesis : MonoBehaviour {
 			}
 		}
 		frames++;
+	}
+
+	void OnTriggerStay(Collider other) {
+	}
+	
+	void OnTriggerEnter(Collider other) {
+
+		if (other.gameObject.tag == "Sword") {
+			trajectory = other.GetComponent<Sword>().trajectory;
+			frames = 0;
+			health -= 1;
+		}
+		else if (other.gameObject.tag == "Boomerang") {
+			//health -= 1;
+		}
+		else if (other.gameObject.tag == "Bomb") {
+			health -= 4;
+		}
+		if(health <= 0) {
+			Destroy(gameObject);
+			var number = Random.Range(0,12);
+			if(number < 2)
+				Instantiate(items[number], transform.position, Quaternion.Euler(0, 0, 180));
+			if(haskey)
+				Instantiate(items[2], transform.position, Quaternion.Euler(0, 0, 180));
+			////print ("Enemy destroyed");
+		}
 	}
 }
