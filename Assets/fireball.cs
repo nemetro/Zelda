@@ -27,8 +27,13 @@ public class fireball : MonoBehaviour {
 		transform.Translate (trajectory / 8f); // Advance in direction of trajectory by one pixel
 	}
 
+	void OnTriggerStay(Collider other) {
+		if(other.gameObject.name == "Link") {
+			Destroy(gameObject);
+		}
+	}
 	void OnTriggerEnter(Collider other) {
-		if(other.gameObject.tag == "Wall" || other.gameObject.name == "Link") {
+		if(other.gameObject.tag == "Wall" || other.gameObject.name == "door" ) {
 			Destroy(gameObject);
 		}
 	}

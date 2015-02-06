@@ -162,14 +162,14 @@ public class Enemy : MonoBehaviour {
 
 			if(moves == 12) {
 				trajectory /= (frames / 40f + 1);
-				//print("Trajectory decremented to " + trajectory);
+				print("Trajectory decremented to " + trajectory);
 			}
 			else if(moves > 14 && moves <= 15) {
 				trajectory = Vector3.zero;
 			}
 			else if(moves > 15 && moves < 18)  {
 				trajectory = trajectory * frames / 40f;
-				//print("Trajectory incremented to " + trajectory);
+				print("Trajectory incremented to " + trajectory);
 			}
 			else if (moves == 19) {
 				moves = Random.Range (0, 5);
@@ -181,7 +181,7 @@ public class Enemy : MonoBehaviour {
 
 		}
 		
-		Vector3 origin = transform.position;
+		/*Vector3 origin = transform.position;
 		Vector3 dir = trajectory;
 		if(trajectory == Vector3.left || trajectory == Vector3.right) {
 			//dir = -1 * trajectory;
@@ -194,13 +194,19 @@ public class Enemy : MonoBehaviour {
 		else {
 			////print ("Hit a thing");
 		}
-		
+		*/
 		
 		
 	}
 	
 	void OnTriggerStay(Collider other) {
-		
+		if(other.gameObject.tag == "Wall" || other.gameObject.name == "door") {
+			if(type == EnemyTypes.Bat) {
+				Vector3 bounceBack = other.gameObject.transform.position - transform.position;
+				bounceBack.Normalize();
+				transform.Translate (bounceBack / 16f);
+			}
+		}
 	}
 	
 	void OnTriggerEnter(Collider other) {
@@ -227,7 +233,7 @@ public class Enemy : MonoBehaviour {
 			health -= 1;
 		}
 		else if (other.gameObject.tag == "Boomerang") {
-			health -= 1;
+			//health -= 1;
 		}
 		else if (other.gameObject.tag == "Bomb") {
 			health -= 4;
