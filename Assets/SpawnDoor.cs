@@ -16,7 +16,7 @@ public class SpawnDoor : MonoBehaviour {
 		spawnPnt = new Vector3(this.gameObject.transform.position.x, 
 		                       this.gameObject.transform.position.y, 
 		                       this.gameObject.transform.position.z - 1);
-		timer = spawntime * 2;
+		timer = spawntime * 1.5f;
 	}
 	
 	// Update is called once per frame
@@ -26,8 +26,7 @@ public class SpawnDoor : MonoBehaviour {
 		if(MoveCamera.xcoord == xcoord && MoveCamera.ycoord == ycoord && !blocked){
 			timer -= Time.deltaTime;
 			if(timer <= 0){
-				print ("Spawn");
-				Enemy SpwnEnemy = Instantiate(enemy, spawnPnt, Quaternion.Euler(0, 0, 180)) as Enemy;
+				Enemy SpwnEnemy = Instantiate(enemy, spawnPnt, Quaternion.Euler(0, 0, 0)) as Enemy;
 				timer = spawntime;
 				SpwnEnemy.xcoord = xcoord;
 				SpwnEnemy.ycoord = ycoord;
@@ -42,6 +41,14 @@ public class SpawnDoor : MonoBehaviour {
 			block = other.gameObject;
 		}
 	}
+
+	void OnTriggerStay(Collider other){
+		if(other.gameObject.name == "vanishingBlock(Clone)"){
+			blocked = true;
+			block = other.gameObject;
+		}
+	}
+
 	void OnTriggerExit(Collider other){
 		if(other.gameObject.name == "vanishingBlock(Clone)")
 			blocked = false;
