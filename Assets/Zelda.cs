@@ -28,7 +28,7 @@ public class Zelda : MonoBehaviour {
 	public static int health = 6;
 	public static int MAX_HEALTH = 6;
 	public static int bombs = 2;
-	public static int keys = 1;
+	public static int keys = 100;
 	public static bool deity = false;
 	public static bool map = false;
 	public static bool compass = false;
