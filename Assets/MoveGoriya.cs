@@ -6,6 +6,7 @@ public class MoveGoriya : MonoBehaviour {
 	public GameObject newBoomerang;
 	public bool haskey;
 
+	public int kill = 6;
 	private int frames = 0;
 	private int squaresToMove = 2;
 	private Vector3 trajectory = Vector3.left;
@@ -33,19 +34,15 @@ public class MoveGoriya : MonoBehaviour {
 			Debug.DrawRay(orig, dir, Color.red, 5f);
 			if(!Physics.Raycast(new Ray(transform.position, -1 * trajectory), out hit, 0.5f + 5f/16f, 1 << 8)) {
 				transform.Translate (trajectory * -5f/16f);
-				//print ("Bounced");
 			}
 			else {
 				bounce = 0;
-				//print ("Bounce failed");
 			}
 			return;
 		}
 		if(frames == 15) {
-			//print ("Fifteen");
-			int die = Random.Range(0, 7);
+			int die = Random.Range(0, kill);
 			if(die == 0) {
-				//print ("die");
 				waiting = true;
 				newBoomerang = Instantiate(boomerang, transform.position, Quaternion.identity) as GameObject;
 				newBoomerang.GetComponent<moveBoomerang>().trajectory = trajectory;
@@ -58,7 +55,7 @@ public class MoveGoriya : MonoBehaviour {
 			squaresToMove = Random.Range (1, 7);
 			if(waiting) trajectory = Vector3.zero;
 			else {
-				int die = Random.Range(0, 7);
+				int die = Random.Range(0, kill);
 				if(die < 2) {
 					trajectory = Vector3.up;
 				}
@@ -81,15 +78,12 @@ public class MoveGoriya : MonoBehaviour {
 			Debug.DrawRay(origin, dirr, Color.red, 5f);
 			if(Physics.Raycast(new Ray(origin, dirr), out hitt, 1f, 1 << 8)) {
 				if(hitt.collider.gameObject.tag == "Obstacle") {
-					////print ("Raycast hit obstacle");
 					frames = 32 * squaresToMove;
 				}
 				else {
-					////print ("No raycast hit");
 					transform.Translate(trajectory / 32f);
 				}
 			} else {
-				////print ("No raycast hit");
 				transform.Translate(trajectory / 32f);
 			}
 		}
@@ -113,10 +107,8 @@ public class MoveGoriya : MonoBehaviour {
 		if(other.gameObject == newBoomerang) {
 			if(other.gameObject.GetComponent<moveBoomerang>().outgoing == false) {
 				waiting = false;
-				//print ("Destroying boomerang");
 				Destroy(other.gameObject);
 			}
-			//else //print ("Keeping boomerang");
 		}
 	}
 	void OnTriggerEnter(Collider other) {
@@ -143,7 +135,6 @@ public class MoveGoriya : MonoBehaviour {
 
 			if(other.gameObject.GetComponent<moveBoomerang>().outgoing == false) {
 				waiting = false;
-				//print ("Destroying boomerang");
 				Destroy(other.gameObject);
 			}
 			snap ();

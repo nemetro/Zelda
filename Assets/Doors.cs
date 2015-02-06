@@ -29,8 +29,7 @@ public class Doors : MonoBehaviour {
 
 	void OnTriggerEnter(Collider that) {
 
-		if(that.gameObject.tag != "Link")
-			return;
+		if(that.gameObject.tag != "Link") return;
 		float dist = 0;
 		switch(door.name){
 		case "BombDoor(Clone)":
@@ -44,8 +43,7 @@ public class Doors : MonoBehaviour {
 			break;
 		}
 
-		if(!open)
-			return;
+		if(!open) return;
 
 		switch (door.tag){
 		case "North":
@@ -75,7 +73,6 @@ public class Doors : MonoBehaviour {
 			}
 			break;
 		default:
-			//print ("Broke");
 			break;
 		}
 	}

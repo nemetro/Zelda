@@ -59,7 +59,6 @@ public class MoveCamera : MonoBehaviour {
 			dest.y -= trans.y;
 			break;
 		default:
-			//print ("Broke");
 			break;
 		}
 		transform.position = dest;

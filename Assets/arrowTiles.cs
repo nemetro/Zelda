@@ -33,7 +33,6 @@ public class arrowTiles : MonoBehaviour {
 				puzzle.facing = direction.south;
 			}
 			hydrant.gameObject.name = "vanishingBlock(Clone)";
-			print (puzzle.facing);
 		}
 	}
 }

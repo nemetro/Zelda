@@ -21,7 +21,6 @@ public class puzzle : MonoBehaviour {
 
 	void Update(){
 		if(lastfacing != facing){
-			print (facing);
 			lastfacing = facing;
 
 			switch(facing){

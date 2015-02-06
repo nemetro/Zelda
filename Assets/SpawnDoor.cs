@@ -16,7 +16,7 @@ public class SpawnDoor : MonoBehaviour {
 		spawnPnt = new Vector3(this.gameObject.transform.position.x, 
 		                       this.gameObject.transform.position.y, 
 		                       this.gameObject.transform.position.z - 1);
-		timer = spawntime * 1.5f;
+		timer = spawntime * 1.25f;
 	}
 	
 	// Update is called once per frame
@@ -27,12 +27,12 @@ public class SpawnDoor : MonoBehaviour {
 			timer -= Time.deltaTime;
 			if(timer <= 0){
 				Enemy SpwnEnemy;
-				if(type == EnemyTypes.Skelleton) {
+				//if(type == EnemyTypes.Skelleton) {
 					SpwnEnemy = Instantiate(enemy, spawnPnt, Quaternion.Euler(0, 0, 180)) as Enemy;
-				}
-				else {
-					SpwnEnemy = Instantiate(enemy, spawnPnt, Quaternion.Euler(0, 0, 0)) as Enemy;
-				}
+//				}
+//				else {
+//					SpwnEnemy = Instantiate(enemy, spawnPnt, Quaternion.Euler(0, 0, 0)) as Enemy;
+//				}
 				timer = spawntime;
 				SpwnEnemy.xcoord = xcoord;
 				SpwnEnemy.ycoord = ycoord;

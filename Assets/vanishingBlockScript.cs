@@ -9,7 +9,7 @@ public class vanishingBlockScript : MonoBehaviour {
 
 	void FixedUpdate () {
 		frames++;
-		float fade = -1f * (frames/500f) * (frames/500f) + 1f;
+		float fade = -1f * (frames/400f) * (frames/400f) + 1f;
 		renderer.material.color = new Color(1f, 1f, 1f, fade);
 		if(fade <= 0) {
 			Destroy(gameObject);

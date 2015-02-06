@@ -22,17 +22,15 @@ public class MoveSkelleton : MonoBehaviour {
 		if(bounce > 0) {
 			bounce -= 5f/16f;
 			Vector3 orig = transform.position;
-			//Vector3 dir = -1*(5f/16f + 0.5f)*trajectory;
 			Vector3 dir = -1 * bounceTrajectory;
+
 			float magnitude = (0.5f + 5f/16f);
 			Debug.DrawRay(orig, dir * magnitude, Color.cyan, 5f);
 			if(!Physics.Raycast(new Ray(orig, dir), out hit, magnitude, 1 << 8)) {
 				transform.Translate (dir * 5f / 16f);
-				print ("bounced");
 			}
 			else {
 				bounce = 0;
-				print("Bounce failed");
 			}
 			return;
 		}
@@ -51,13 +49,11 @@ public class MoveSkelleton : MonoBehaviour {
 			}
 		}
 
-
 		Vector3 origin = transform.position;
-		//Vector3 dir = -1*(5f/16f + 0.5f)*trajectory;
 		Vector3 dirr = -1 * (0.5f + 1f/16f) * trajectory;
 		Debug.DrawRay(origin, dirr, Color.red, 5f);
 		if(!Physics.Raycast(new Ray(origin, dirr), out hit, 0.5f + 1f/16f, 1 << 8)) {
-			transform.Translate (trajectory / 16f);
+			transform.Translate (trajectory / 22f);
 		}
 
 		frames++;
@@ -76,21 +72,10 @@ public class MoveSkelleton : MonoBehaviour {
 		if(other.gameObject.tag == "Sword") {
 			bounceTrajectory = other.GetComponent<Sword>().trajectory;
 			bounce = 4f;
-			//frames = 16 * squaresToMove;
-			//GameObject Link = GameObject.Find("Link");
-			/*trajectory = Link.transform.position + transform.position;
-			trajectory.z = 0;
-			if(Mathf.Abs(trajectory.x) > Mathf.Abs(trajectory.y)) {
-				trajectory.y = 0;
-			}
-			else {
-				trajectory.x = 0;
-			}
-			trajectory.Normalize();*/
 		}
 		if(other.gameObject.layer == 8 || other.gameObject.name == "door") {
-			//snap ();
 			bounce = 0;
+			trajectory = -1f * trajectory;
 			//frames = 16 * squaresToMove;
 		}
 	}

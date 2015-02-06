@@ -12,7 +12,6 @@ public class BombWall : MonoBehaviour {
 
 	void OnTriggerEnter (Collider that) {
 		if(that.gameObject.tag == "Bomb" || that.name == "Boom(Clone)"){
-			//print ("BOMB");
 			Vector3 dest = this.transform.position;
 			switch (dir){
 			case direction.north:
@@ -48,7 +47,6 @@ public class BombWall : MonoBehaviour {
 				newdoor2.tag = "East";
 				break;
 			default:
-				//print ("Broke");
 				break;
 			}
 

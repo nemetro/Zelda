@@ -8,7 +8,6 @@ public class HUD : MonoBehaviour {
 	private Text healthT;
 	private Text keys;
 	private Text bombs;
-//	private Text level;
 	private Image map;
 	private Text xy;
 	private Text compass;
@@ -30,13 +29,10 @@ public class HUD : MonoBehaviour {
 
 		xy = transform.Find("Coords").gameObject.GetComponent<Text>();
 
-//		level = transform.Find("Level").gameObject.GetComponent<Text>();
-//		level.text = MoveCamera.S.Level;
 
 		map = transform.Find("Map").gameObject.GetComponent<Image>();
 		C = transform.Find("C").gameObject.GetComponent<Image>();
-		if(C == null)
-			print ("What the heck");
+
 		deity = transform.Find("Deity").gameObject.GetComponent<Text>(); 
 	}
 	

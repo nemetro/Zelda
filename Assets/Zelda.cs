@@ -27,46 +27,20 @@ public class Zelda : MonoBehaviour {
 	public static Vector3 trajectory;
 	public static int health = 6;
 	public static int MAX_HEALTH = 6;
-	public static int bombs = 2;
-	public static int keys = 1;
+	public static int bombs = 0;
+	public static int keys = 0;
 	public static bool deity = false;
 	public static bool map = false;
 	public static bool compass = false;
-	public static bool obst = true;
+	public static bool obst = false;
 	public Material [] skins = new Material [4];
 
 	void snap() {
-		//Vector3 target = new Vector3(Mathf.Round(transform.position.x * 2) / 2, Mathf.Round(transform.position.y * 2) / 2, 0.5f);
-		//RaycastHit hit;
-		//int layermask = 1 << 8;
-		/*if(Physics.Raycast(target - 0.5f*Vector3.up - 0.5f*Vector3.left, (Vector3.up + Vector3.left), out hit, Mathf.Sqrt (2f), layermask)) {
-			Debug.DrawRay(target - 0.5f*Vector3.up - 0.5f*Vector3.left, Mathf.Sqrt(2)/2f * (Vector3.up + Vector3.left), Color.red, 1f);
-			//print ("Ray hit " + hit.collider.tag + ", " + hit.collider.name + ", " + hit.collider.gameObject.layer);
-			////print ("Ray 1 hit");
-		}*/
-		/*if(Physics.Raycast(target - 0.5f*Vector3.up - 0.5f*Vector3.right, Vector3.up + Vector3.right, Mathf.Sqrt(2))) {
-			//print ("Ray 2 hit");
-		}*/
-		transform.position = new Vector3(Mathf.Round(transform.position.x * 2) / 2, Mathf.Round(transform.position.y * 2) / 2,  transform.position.z);
-		/*if(trajectory == Vector3.right || trajectory == Vector3.left) {
-			float pixel = 16f * transform.position.y - 24f; // Pixels from topmost pixel of topmost floor tile
-			while(pixel >= 175f) pixel -= 175f;
-			float offset = pixel / 16f; // meters from topmost pixel of topmost floor tile of room
-			float move = Mathf.Round(offset * 2f) / 2f - offset; // number of meters to move to snap vertically
-			//print (pixel + ", " + offset + ", " + move);
-			transform.position = new Vector3(transform.position.x, transform.position.y + move, transform.position.z);
-		}
-		else {
-			float pixel = 16f * transform.position.x + 430f; // Pixels from leftmost pixel of leftmost floor tile
-			while(pixel < 248f) pixel += 248f;
-			float offset = pixel / 16f; // meters from leftmost pixel of leftmost floor tile of room
-			float move = Mathf.Round(offset * 2f) / 2f - offset; // number of meters to move to snap horizontally
-			//print (pixel + ", " + offset + ", " + move);
-			transform.position = new Vector3(transform.position.x + move, transform.position.y, transform.position.z);
-		}*/
+		transform.position = new Vector3(Mathf.Round(transform.position.x * 2) / 2, 
+		                                 Mathf.Round(transform.position.y * 2) / 2, 
+		                                 transform.position.z);
 	}
 
-	// Use this for initialization
 	void Start () {
 		Z = this;
 		facing = direction.north;
@@ -81,35 +55,17 @@ public class Zelda : MonoBehaviour {
 		else if(invincible && invincibleTimer <= 0){
 			invincible = deity;
 		}
+
 		if(Input.GetKeyDown(KeyCode.G)){
 			deity = !deity;
 			invincible = deity;
 			if(deity){
 				if(bombs == 0)
 					bombs = 1;
+				if(keys == 0)
+					keys = 1;
 				health = MAX_HEALTH;
 			}
-		}
-		if(Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown (KeyCode.W)){
-			this.gameObject.renderer.material = skins[0];
-			facing = direction.north;
-			if(invincibleTimer <= 0)
-				invincible = deity;
-		}else if(Input.GetKeyDown (KeyCode.RightArrow) || Input.GetKeyDown (KeyCode.D)){
-			this.gameObject.renderer.material = skins[1];
-			facing = direction.east;
-			if(invincibleTimer <= 0)
-				invincible = deity;
-		}else if(Input.GetKeyDown (KeyCode.DownArrow) || Input.GetKeyDown (KeyCode.S)){
-			this.gameObject.renderer.material = skins[2];
-			facing = direction.south;
-			if(invincibleTimer <= 0)
-				invincible = deity;
-		}else if(Input.GetKeyDown (KeyCode.LeftArrow) || Input.GetKeyDown (KeyCode.A)){
-			this.gameObject.renderer.material = skins[3];
-			facing = direction.west;
-			if(invincibleTimer <= 0)
-				invincible = deity;
 		}
 
 		if (Input.GetKeyDown (KeyCode.X) || Input.GetKeyDown (KeyCode.Period)) {
@@ -158,11 +114,10 @@ public class Zelda : MonoBehaviour {
 			}
 		}
 	}
-	// Update is called once per frame
+
 	void FixedUpdate () {
 		if(bounce > 0) {
 			if(locked) {
-				//print ("Locked");
 				bounce = 0;
 				return;
 			}
@@ -173,10 +128,8 @@ public class Zelda : MonoBehaviour {
 				Debug.DrawRay(orig, dir, Color.red, 5f);
 				if(!Physics.Raycast(new Ray(transform.position, -1 * trajectory), out hit, 0.5f + 5f*pixel, layermask)) {
 					transform.Translate (trajectory * -5f * pixel);
-					////print ("Bounced");
 				}
 				else {
-					////print ("Bounce failed");
 					transform.Translate (trajectory * -1 * (hit.distance - 1f));
 				}
 				return;
@@ -187,55 +140,68 @@ public class Zelda : MonoBehaviour {
 			return;
 		}
 
-		//if(locked) return;
-		Vector3 oldTrajectory = trajectory;
-		
+		Vector3 oldTrajectory = trajectory;		
 
 		if (Input.GetKey (KeyCode.LeftArrow) || Input.GetKey (KeyCode.A)) {
+			this.gameObject.renderer.material = skins[3];
+			if(invincibleTimer <= 0)
+				invincible = deity;
+
 			trajectory = Vector3.right;
 			facing = direction.west;
+
 			Vector3 origin = transform.position - (pixel - 0.5f)*trajectory - pixel * Vector3.up;
 			Vector3 dir = -1 * trajectory;
 			Debug.DrawRay(origin, dir, Color.red);
 			if(!Physics.Raycast(new Ray(origin, dir), out hit, 1f, layermask)) {
-				transform.Translate (trajectory * pixel);
+				transform.Translate (trajectory * 1.4f * pixel);
 			}
 		} else if (Input.GetKey (KeyCode.UpArrow) || Input.GetKey (KeyCode.W)) {
+			this.gameObject.renderer.material = skins[0];
+			if(invincibleTimer <= 0)
+				invincible = deity;
+
 			trajectory = Vector3.up;
 			facing = direction.north;
+
 			Vector3 origin = transform.position + (pixel - 0.5f)*trajectory;
 			Debug.DrawRay(origin, trajectory, Color.red);
 			if(!Physics.Raycast(new Ray(origin, trajectory), out hit, 0.5f, layermask)) {
-				transform.Translate (trajectory * pixel);
+				transform.Translate (trajectory * 1.4f * pixel);
 			}
 		} else if (Input.GetKey (KeyCode.RightArrow) || Input.GetKey (KeyCode.D)) {
+			this.gameObject.renderer.material = skins[1];
+			if(invincibleTimer <= 0)
+				invincible = deity;
+
 			trajectory = Vector3.left;
 			facing = direction.east;
+
 			Vector3 origin = transform.position - (pixel - 0.5f)*trajectory - pixel * Vector3.up;
 			Vector3 dir =  -1 * trajectory;
 			Debug.DrawRay(origin, dir, Color.red);
 			if(!Physics.Raycast(new Ray(origin, dir), out hit, 1f, layermask)) {
-				transform.Translate (trajectory * pixel);
+				transform.Translate (trajectory * 1.4f * pixel);
 			}
 		} else if (Input.GetKey (KeyCode.DownArrow) || Input.GetKey (KeyCode.S)) {
+			this.gameObject.renderer.material = skins[2];
+			if(invincibleTimer <= 0)
+				invincible = deity;
+
 			trajectory = Vector3.down;
 			facing = direction.south;
+
 			Vector3 origin = transform.position + (pixel - 0.5f)*trajectory;
 			Debug.DrawRay(origin, trajectory, Color.red);
 			if(!Physics.Raycast(new Ray(origin, trajectory), out hit, 1f, layermask)) {
-				transform.Translate (trajectory * pixel);
+				transform.Translate (trajectory * 1.4f * pixel);
 			}
 		}
 
 		if(trajectory != oldTrajectory) {
 			snap();
-			/*while(pixelsMoved != 0) {
-				pixelsMoved = (pixelsMoved + 1) % 8;
-				transform.Translate (oldTrajectory * pixel);
-			}*/
 		}
 	}
-	
 	
 	// Returns true if overlapping, but not just touching
 	bool overlap(Collider other) {
@@ -246,18 +212,12 @@ public class Zelda : MonoBehaviour {
 	void OnTriggerExit(Collider other) {
 		if (other.gameObject.layer == 8) {
 			colliding--;
-			////print ("Unlocked");
 			if (colliding == 0) locked = false;
 		}
 	}
 	void OnTriggerStay(Collider other) {
-		if(other.gameObject.layer == 8) {
-			//transform.Translate (trajectory * pixel);
-		}
 
 		if(other.gameObject.tag == "Moveable"){
-			//print ("MOVEABLE");
-			//transform.Translate (trajectory *-1* pixel);
 			other.gameObject.tag = "Obstacle";
 			if (trajectory == Vector3.up || trajectory == Vector3.down)
 				other.transform.Translate(trajectory*-16*pixel);
@@ -267,22 +227,21 @@ public class Zelda : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
-		////print(colliding);
 		if(other.gameObject.layer == 8) {
 			locked = true;
 			colliding++;
 		}
 		if (other.gameObject.name == "Locked"){
-			print ("LOCKED");
 			if(keys > 0){
-				keys--;
+				if(other.gameObject != null)
+					Destroy(other.gameObject);
+				if(!deity) keys--;
 				colliding--;
 				locked = false;
 			}
 		}
 		if(other.gameObject.tag == "Item")
 		{
-			//print ("ITEM");
 			switch(other.gameObject.name){
 			case "Heart":
 				if(health+2 <= MAX_HEALTH)
@@ -292,7 +251,6 @@ public class Zelda : MonoBehaviour {
 				break;
 			case "Key":
 			case "Key(Clone)":
-				print ("Collecting key");
 				keys++;
 				break;
 			case "Bombs":
@@ -308,17 +266,17 @@ public class Zelda : MonoBehaviour {
 				obst = true;
 				break;
 			case "Triforce":
+				compass = false;
+				map = false;
 				Application.LoadLevel("_Intro");
 				break;
 			default:
-				//print ("Unknown Item");
 				break;
 			}
 			Destroy(other.gameObject);
 		}
 
 		if ((other.gameObject.tag == "Enemy" || other.gameObject.tag == "Boomerang") && !invincible) {
-			//transform.Translate (trajectory * -2);
 			bounce = 2f;
 			if(other.gameObject.tag == "Boomerang") {
 				health -= 1;
@@ -333,26 +291,13 @@ public class Zelda : MonoBehaviour {
 				health = MAX_HEALTH;
 			}
 		}
-		if (other.gameObject.tag == "Boomerang" && !invincible) {
-			//transform.Translate (trajectory * -2);
-			bounce = 2f;
-			health -= 1;
-			invincible = true;
-			invincibleTimer = 2f;
-			if(health < 1){
-				Application.LoadLevel("_Intro");
-				health = MAX_HEALTH;
-			}
-		}
 	}
 
 	public void MoveLink(direction dir, float dist){
-		//print (dir);
 		Vector3 dest = transform.position;
 		invincible = true;
 
 		if(dist != 0){
-			//print ("Move by " + dist);
 			switch (dir){
 			case direction.north:
 				dest.y += dist;
@@ -373,7 +318,6 @@ public class Zelda : MonoBehaviour {
 				dest.z += dist;
 				break;
 			default:
-				//print ("Broke");
 				break;
 			}
 		}
@@ -400,7 +344,6 @@ public class Zelda : MonoBehaviour {
 				dest.y -= 8;
 				break;
 			default:
-				//print ("Broke");
 				break;
 			}
 		}

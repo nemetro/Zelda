@@ -69,67 +69,9 @@ public class MoveBlob : MonoBehaviour {
 				}
 			}
 			if(Physics.Raycast(new Ray(origin, -1 * trajectory), out hitt, 1f, 1 << 8)) {
-				print ("Bad direction");
 			} else frames = 0;
-			//print("New trajectory: " + trajectory);
 		}
 		frames++;
-		/*
-
-		frames++;
-		if(frames >= 32) {
-			snap ();
-			if(frames < 40) {
-				// pause for a few frames after each square of movement
-				frames++;
-				return;
-			}
-			else {
-				int die = Random.Range(0, 10);
-				if(die < 4) {
-					//Trajectory stays the same
-				}
-				else if(die < 6) {
-					pauseFrames = 32;
-				}
-				else if(die < 7) {
-					trajectory = new Vector3(trajectory.y, trajectory.x, trajectory.z);
-				}
-				else if(die < 8) {
-					trajectory = new Vector3(-1 * trajectory.y, trajectory.x, trajectory.z);
-				}
-				else {
-					trajectory = new Vector3(trajectory.y, -1 * trajectory.x, trajectory.z);
-				}
-			}
-		}
-
-
-
-		RaycastHit hitt;
-		if(frames == 40){
-			frames = 0;
-			Vector3 origin = transform.position;
-			Vector3 dirr = -1 * trajectory;
-			Debug.DrawRay(origin, dirr, Color.red, 5f);
-			if(Physics.Raycast(new Ray(origin, dirr), out hitt, 1f, 1 << 8)) {
-				if(hitt.collider.gameObject.tag == "Obstacle") {
-					//print ("Raycast hit obstacle");
-					frames = 32 * squaresToMove;
-				}
-				else {
-					//print ("No raycast hit");
-					transform.Translate(trajectory / 32f);
-				}
-			} else {
-				//print ("No raycast hit");
-				transform.Translate(trajectory / 32f);
-			}
-		}
-		else {
-			transform.Translate(trajectory / 32f);
-		}
-		frames++;*/
 	}
 	
 	void OnTriggerStay(Collider other) {

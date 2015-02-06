@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public enum EnemyTypes {Bat, Skelleton, Blob, Dragon, Fireball, Goriya};
+public enum EnemyTypes {Bat, Skelleton, Blob, Dragon, Fireball, Goriya, Boss};
 public class Enemy : MonoBehaviour {
 	public static GameObject E;
 	public EnemyTypes type;
@@ -24,6 +24,7 @@ public class Enemy : MonoBehaviour {
 	public bool haskey;
 	public GameObject [] items = new GameObject [3];
 	private int moves = 3;
+	public  Vector3 bossPos;
 	// Use this for initialization
 	void Start () {
 		E = this.gameObject;
@@ -74,6 +75,20 @@ public class Enemy : MonoBehaviour {
 			trajectory = new Vector3(-1, 0, 0);
 
 			Destroy(sGoriya);
+			Destroy(sBlob);
+			Destroy(sSkelleton);
+		}
+		else if (type == EnemyTypes.Boss) {
+
+			bossPos = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z);
+
+			health = 17;
+			damage = 2;
+			scale.x = 2.4375f;
+			scale.y = 3f;
+			this.gameObject.renderer.material = skins[4];
+
+			this.gameObject.GetComponent<MoveGoriya>().kill = 2;
 			Destroy(sBlob);
 			Destroy(sSkelleton);
 		}
@@ -162,14 +177,12 @@ public class Enemy : MonoBehaviour {
 
 			if(moves == 12) {
 				trajectory /= (frames / 40f + 1);
-				print("Trajectory decremented to " + trajectory);
 			}
 			else if(moves > 14 && moves <= 15) {
 				trajectory = Vector3.zero;
 			}
 			else if(moves > 15 && moves < 18)  {
 				trajectory = trajectory * frames / 40f;
-				print("Trajectory incremented to " + trajectory);
 			}
 			else if (moves == 19) {
 				moves = Random.Range (0, 5);
@@ -180,22 +193,6 @@ public class Enemy : MonoBehaviour {
 			return;
 
 		}
-		
-		/*Vector3 origin = transform.position;
-		Vector3 dir = trajectory;
-		if(trajectory == Vector3.left || trajectory == Vector3.right) {
-			//dir = -1 * trajectory;
-		}
-		Debug.DrawRay(origin, dir, Color.cyan);
-		if(!Physics.Raycast(new Ray(origin, dir), out hit, 0.5f + pixel, layermask)) {
-			transform.Translate (trajectory * pixel);
-			////print ("Hit nothing");
-		}
-		else {
-			////print ("Hit a thing");
-		}
-		*/
-		
 		
 	}
 	
@@ -211,11 +208,6 @@ public class Enemy : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider other) {
 		
-		/*if(other.gameObject.tag == "Link"){
-			Zelda.health -= damage;
-			//print (Zelda.health);
-			//print ("HIT");
-		}*/
 		if(other.gameObject.name == "door") {
 			if(type == EnemyTypes.Skelleton) return;
 			trajectory = -1 * trajectory;
@@ -223,17 +215,12 @@ public class Enemy : MonoBehaviour {
 		}
 		if (other.gameObject.tag == "Wall" || other.gameObject.tag == "Obstacle") {
 			if(type == EnemyTypes.Dragon || type == EnemyTypes.Skelleton) return;
-			//if(type == EnemyTypes.Bat) {
 			trajectory = -1 * trajectory;
 			transform.Translate (trajectory * 3 * pixel);
-			//}
 		}
 		
 		if (other.gameObject.tag == "Sword") {
 			health -= 1;
-		}
-		else if (other.gameObject.tag == "Boomerang") {
-			//health -= 1;
 		}
 		else if (other.gameObject.tag == "Bomb") {
 			health -= 4;
@@ -245,7 +232,6 @@ public class Enemy : MonoBehaviour {
 				Instantiate(items[number], transform.position, Quaternion.Euler(0, 0, 180));
 			if(haskey)
 				Instantiate(items[2], transform.position, Quaternion.Euler(0, 0, 180));
-			////print ("Enemy destroyed");
 		}
 	}
 }
