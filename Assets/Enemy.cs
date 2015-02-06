@@ -97,7 +97,7 @@ public class Enemy : MonoBehaviour {
 		}
 		else if(type == EnemyTypes.Goriya){
 			health = 2;
-			scale.x = .8125f;
+			//scale.x = .8125f;
 			scale.y = 1f;
 			this.gameObject.renderer.material = skins[4];
 			
@@ -114,6 +114,8 @@ public class Enemy : MonoBehaviour {
 	}
 	
 	void FixedUpdate () {
+		if(MoveCamera.xcoord != xcoord || MoveCamera.ycoord != ycoord) return;
+
 		if(type == EnemyTypes.Fireball) return;
 		frames++;
 		if(type == EnemyTypes.Dragon) {
@@ -160,14 +162,14 @@ public class Enemy : MonoBehaviour {
 
 			if(moves == 12) {
 				trajectory /= (frames / 40f + 1);
-				print("Trajectory decremented to " + trajectory);
+				//print("Trajectory decremented to " + trajectory);
 			}
 			else if(moves > 14 && moves <= 15) {
 				trajectory = Vector3.zero;
 			}
 			else if(moves > 15 && moves < 18)  {
 				trajectory = trajectory * frames / 40f;
-				print("Trajectory incremented to " + trajectory);
+				//print("Trajectory incremented to " + trajectory);
 			}
 			else if (moves == 19) {
 				moves = Random.Range (0, 5);

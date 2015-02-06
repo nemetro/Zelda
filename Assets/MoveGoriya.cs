@@ -41,36 +41,41 @@ public class MoveGoriya : MonoBehaviour {
 			}
 			return;
 		}
+		if(waiting) {
+			return;
+		}
 		if(frames == 15) {
 			//print ("Fifteen");
-			int die = Random.Range(0, 7);
+			//int die = Random.Range(0, 7);
+			int die = Random.Range(0, 3);
 			if(die == 0) {
 				//print ("die");
 				waiting = true;
 				newBoomerang = Instantiate(boomerang, transform.position, Quaternion.identity) as GameObject;
 				newBoomerang.GetComponent<moveBoomerang>().trajectory = trajectory;
-				trajectory = Vector3.zero;
+				frames++;
+				return;
+				//trajectory = Vector3.zero;
 			}
 		}
 		if(frames >= 32 * squaresToMove) {
 			frames = 0;
 			snap ();
+
 			squaresToMove = Random.Range (1, 7);
-			if(waiting) trajectory = Vector3.zero;
+
+			int die = Random.Range(0, 7);
+			if(die < 2) {
+				trajectory = Vector3.up;
+			}
+			else if(die < 4) {
+				trajectory = Vector3.down;
+			}
+			else if(die < 5) {
+				trajectory = Vector3.left;
+			}
 			else {
-				int die = Random.Range(0, 7);
-				if(die < 2) {
-					trajectory = Vector3.up;
-				}
-				else if(die < 4) {
-					trajectory = Vector3.down;
-				}
-				else if(die < 5) {
-					trajectory = Vector3.left;
-				}
-				else {
-					trajectory = Vector3.right;
-				}
+				trajectory = Vector3.right;
 			}
 		}
 
@@ -136,8 +141,8 @@ public class MoveGoriya : MonoBehaviour {
 		if(other.gameObject.tag == "Wall" || other.gameObject.name == "door") {
 			snap ();
 			bounce = 0;
-			transform.Translate (trajectory / 32f);
-			//frames = 32 * squaresToMove;
+			//transform.Translate (trajectory / 32f);
+			frames = 32 * squaresToMove;
 		}
 		if(other.gameObject == newBoomerang) {
 
@@ -145,9 +150,12 @@ public class MoveGoriya : MonoBehaviour {
 				waiting = false;
 				//print ("Destroying boomerang");
 				Destroy(other.gameObject);
+
 			}
-			else //print ("Keeping boomerang");
-			snap ();
+			else {
+				//print ("Keeping boomerang");
+			}
+			//snap();
 			bounce = 0;
 			transform.Translate (trajectory / 32f);
 			//frames = 32 * squaresToMove;
