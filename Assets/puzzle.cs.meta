@@ -3,12 +3,13 @@ guid: 8e4f001e2aee146d6958abd5216bf74f
 MonoImporter:
   serializedVersion: 2
   defaultReferences:
-  - up: {fileID: 129108, guid: dd56878f9c10943d5a9d3c9c566f651d, type: 2}
-  - left: {fileID: 144130, guid: 6021eb5214b98443c8ee77e76ff3f798, type: 2}
-  - right: {fileID: 119600, guid: 57fadcb91b53b430287d1228e2deee19, type: 2}
-  - down: {fileID: 157942, guid: 340738956a6614cf196422aaf1ad8a51, type: 2}
   - raft: {instanceID: 0}
-  - hydrantPre: {fileID: 187734, guid: fa65cbb76aea74b59af4c14cf52e175c, type: 2}
+  - raftPre: {instanceID: 0}
+  - southW: {instanceID: 0}
+  - eastW: {instanceID: 0}
+  - raftBlock: {instanceID: 0}
+  - water: {fileID: 2100000, guid: 7e9ba5a6a95b94ecfa85ea2c82d37140, type: 2}
+  - noWater: {fileID: 2100000, guid: 8ef54e722ea3b464fb63ae538547f2be, type: 2}
   - hydrant: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}

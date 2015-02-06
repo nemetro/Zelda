@@ -3,7 +3,6 @@ using System.Collections;
 
 public class arrowTiles : MonoBehaviour {
 	
-	public GameObject raft;
 	public GameObject hydrantPre;
 	public static GameObject hydrant;
 	
@@ -33,6 +32,7 @@ public class arrowTiles : MonoBehaviour {
 				hydrant = nH;
 				puzzle.facing = direction.south;
 			}
+			hydrant.gameObject.name = "vanishingBlock(Clone)";
 			print (puzzle.facing);
 		}
 	}
