@@ -200,7 +200,7 @@ public class Enemy : MonoBehaviour {
 	}
 	
 	void OnTriggerStay(Collider other) {
-		if(other.gameObject.tag == "Wall") {
+		if(other.gameObject.tag == "Wall" || other.gameObject.name == "door") {
 			if(type == EnemyTypes.Bat) {
 				Vector3 bounceBack = other.gameObject.transform.position - transform.position;
 				bounceBack.Normalize();
