@@ -32,7 +32,7 @@ public class Zelda : MonoBehaviour {
 	public static bool deity = false;
 	public static bool map = false;
 	public static bool compass = false;
-	public static bool obst = false;
+	public static bool obst = true;
 	public Material [] skins = new Material [4];
 
 	void snap() {

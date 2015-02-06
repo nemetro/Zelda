@@ -146,7 +146,6 @@ public class MoveGoriya : MonoBehaviour {
 				//print ("Destroying boomerang");
 				Destroy(other.gameObject);
 			}
-			else //print ("Keeping boomerang");
 			snap ();
 			bounce = 0;
 			transform.Translate (trajectory / 32f);

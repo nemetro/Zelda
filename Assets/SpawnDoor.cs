@@ -5,6 +5,7 @@ public class SpawnDoor : MonoBehaviour {
 
 	public Enemy enemy;
 	public float spawntime;
+	public EnemyTypes type;
 	public int xcoord, ycoord;
 	private float timer = 0;
 	private Vector3 spawnPnt;
@@ -15,16 +16,7 @@ public class SpawnDoor : MonoBehaviour {
 		spawnPnt = new Vector3(this.gameObject.transform.position.x, 
 		                       this.gameObject.transform.position.y, 
 		                       this.gameObject.transform.position.z - 1);
-//		BoxCollider box = this.gameObject.GetComponent<BoxCollider>();
-//		Vector3 center, size;
-//		center.x = 0.1667f;
-//		center.y = -0.31f;
-//		center.z = f;
-//		size.x = 1f;
-//		size.y = 1f;
-//		size.z = 2f;
-//		box.center = center;
-//		box.size = size;
+		timer = spawntime * 2;
 	}
 	
 	// Update is called once per frame
@@ -39,6 +31,7 @@ public class SpawnDoor : MonoBehaviour {
 				timer = spawntime;
 				SpwnEnemy.xcoord = xcoord;
 				SpwnEnemy.ycoord = ycoord;
+				SpwnEnemy.type = type;
 			}
 		}
 	}
