@@ -81,8 +81,7 @@ public class Enemy : MonoBehaviour {
 			health = 10;
 			scale.x = .5f;
 			scale.y = .5f;
-			xcoord = 4;
-			ycoord = 1;
+
 			Destroy(sGoriya);
 			Destroy(sBlob);
 			Destroy(sSkelleton);

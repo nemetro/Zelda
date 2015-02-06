@@ -4,7 +4,7 @@ using System.Collections;
 public class MoveGoriya : MonoBehaviour {
 	public GameObject boomerang;
 	public GameObject newBoomerang;
-
+	public bool haskey;
 
 	private int frames = 0;
 	private int squaresToMove = 2;

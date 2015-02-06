@@ -315,10 +315,26 @@ public class Zelda : MonoBehaviour {
 			Destroy(other.gameObject);
 		}
 
-		if (other.gameObject.tag == "Enemy" && !invincible) {
+		if ((other.gameObject.tag == "Enemy" || other.gameObject.tag == "Boomerang") && !invincible) {
 			//transform.Translate (trajectory * -2);
 			bounce = 2f;
-			health -= other.gameObject.GetComponent<Enemy>().damage;
+			if(other.gameObject.tag == "Boomerang") {
+				health -= 1;
+			}
+			else {
+				health -= other.gameObject.GetComponent<Enemy>().damage;
+			}
+			invincible = true;
+			invincibleTimer = 2f;
+			if(health < 1){
+				Application.LoadLevel("_Intro");
+				health = MAX_HEALTH;
+			}
+		}
+		if (other.gameObject.tag == "Boomerang" && !invincible) {
+			//transform.Translate (trajectory * -2);
+			bounce = 2f;
+			health -= 1;
 			invincible = true;
 			invincibleTimer = 2f;
 			if(health < 1){
