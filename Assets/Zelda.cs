@@ -291,6 +291,8 @@ public class Zelda : MonoBehaviour {
 					health++;
 				break;
 			case "Key":
+			case "Key(Clone)":
+				print ("Collecting key");
 				keys++;
 				break;
 			case "Bombs":
