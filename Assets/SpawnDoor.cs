@@ -26,7 +26,13 @@ public class SpawnDoor : MonoBehaviour {
 		if(MoveCamera.xcoord == xcoord && MoveCamera.ycoord == ycoord && !blocked){
 			timer -= Time.deltaTime;
 			if(timer <= 0){
-				Enemy SpwnEnemy = Instantiate(enemy, spawnPnt, Quaternion.Euler(0, 0, 0)) as Enemy;
+				Enemy SpwnEnemy;
+				if(type == EnemyTypes.Skelleton) {
+					SpwnEnemy = Instantiate(enemy, spawnPnt, Quaternion.Euler(0, 0, 180)) as Enemy;
+				}
+				else {
+					SpwnEnemy = Instantiate(enemy, spawnPnt, Quaternion.Euler(0, 0, 0)) as Enemy;
+				}
 				timer = spawntime;
 				SpwnEnemy.xcoord = xcoord;
 				SpwnEnemy.ycoord = ycoord;
