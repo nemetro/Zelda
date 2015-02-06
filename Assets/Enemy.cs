@@ -200,7 +200,13 @@ public class Enemy : MonoBehaviour {
 	}
 	
 	void OnTriggerStay(Collider other) {
-		
+		if(other.gameObject.tag == "Wall") {
+			if(type == EnemyTypes.Bat) {
+				Vector3 bounceBack = other.gameObject.transform.position - transform.position;
+				bounceBack.Normalize();
+				transform.Translate (bounceBack / 16f);
+			}
+		}
 	}
 	
 	void OnTriggerEnter(Collider other) {
